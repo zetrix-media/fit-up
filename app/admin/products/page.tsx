@@ -1,29 +1,38 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaTrash, FaEdit, FaEye } from 'react-icons/fa';
 
-const ProductPage = () => {
-  // Mock product data (replace with API integration)
-  const [products, setProducts] = useState([]);
+interface Product {
+  id: number;
+  image: string;
+  sku: string;
+  title: string;
+  quantity: number;
+  price: string;
+}
+
+const ProductsPage = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
-    // Fetch product data (mock data for now)
-    const mockData = Array.from({ length: 15 }, (_, i) => ({
-      id: i + 1,
-      image: '/placeholder.png', // Replace with actual URLs
-      sku: '2356',
-      title: 'Everybody Classic V',
-      quantity: 900,
-      price: 'AED 900',
-    }));
+    const mockData: Product[] = [
+      {
+        id: 1,
+        image: '/assets/background-image.jpeg',
+        sku: 'SKU123',
+        title: 'Product 1',
+        quantity: 10,
+        price: 'AED 900',
+      },
+      // Add more mock products as needed
+    ];
     setProducts(mockData);
   }, []);
 
-  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
@@ -35,17 +44,13 @@ const ProductPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Product List</h1>
-        {/* <button className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex items-center">
+        <button
+          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex items-center"
+          onClick={() => window.location.href = '/admin/products/add'}
+        >
           <span className="text-lg font-bold mr-2">+</span>
           Add Product
-        </button> */}
-      <button
-        className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex items-center"
-        onClick={() => window.location.href = '/admin/products/add'}
-      >
-        <span className="text-lg font-bold mr-2">+</span>
-        Add Product
-      </button>
+        </button>
       </div>
 
       {/* Product Table */}
@@ -145,4 +150,4 @@ const ProductPage = () => {
   );
 };
 
-export default ProductPage;
+export default ProductsPage;
