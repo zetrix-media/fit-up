@@ -1,35 +1,38 @@
-"use client";
+import React from 'react';
 
-type FormTextareaProps = {
+interface FormTextareaProps {
   label: string;
-  id: string;
+  name: string;
   placeholder?: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  required?: boolean;
-};
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  rows?: number;
+}
 
-export function FormTextarea({
+const FormTextarea: React.FC<FormTextareaProps> = ({
   label,
-  id,
-  placeholder,
-  value,
+  name,
+  placeholder = '',
+  value = '',
   onChange,
-  required = false,
-}: FormTextareaProps) {
+  rows = 4,
+}) => {
   return (
-    <div className="mb-4">
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700">
+    <div className="flex flex-col space-y-2">
+      <label htmlFor={name} className="text-sm font-medium text-gray-700">
         {label}
       </label>
       <textarea
-        id={id}
-        className="h-32 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-yellow-500 focus:outline-none"
+        id={name}
+        name={name}
+        rows={rows}
+        className="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        required={required}
       />
     </div>
   );
-}
+};
+
+export default FormTextarea;

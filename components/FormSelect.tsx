@@ -1,40 +1,24 @@
-"use client";
-
-type Option = {
-  value: string;
+interface FormSelectProps {
   label: string;
-};
+  name: string;
+  options: { value: string; label: string }[];
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
 
-type FormSelectProps = {
-  label: string;
-  id: string;
-  options: Option[];
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  required?: boolean;
-};
-
-export function FormSelect({
-  label,
-  id,
-  options,
-  value,
-  onChange,
-  required = false,
-}: FormSelectProps) {
+const FormSelect: React.FC<FormSelectProps> = ({ label, name, options, value, onChange }) => {
   return (
-    <div className="mb-4">
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700">
+    <div className="flex flex-col">
+      <label htmlFor={name} className="font-semibold text-gray-700 mb-2">
         {label}
       </label>
       <select
-        id={id}
-        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-yellow-500 focus:outline-none"
+        name={name}
+        id={name}
         value={value}
         onChange={onChange}
-        required={required}
+        className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
       >
-        <option value="">Select {label}</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -43,4 +27,6 @@ export function FormSelect({
       </select>
     </div>
   );
-}
+};
+
+export default FormSelect;

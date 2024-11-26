@@ -1,38 +1,27 @@
-"use client";
-
-type FormInputProps = {
+interface FormInputProps {
   label: string;
-  id: string;
+  name: string;
   type?: string;
-  placeholder?: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
-};
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
-export function FormInput({
-  label,
-  id,
-  type = "text",
-  placeholder,
-  value,
-  onChange,
-  required = false,
-}: FormInputProps) {
+const FormInput: React.FC<FormInputProps> = ({ label, name, type = 'text', value, onChange }) => {
   return (
-    <div className="mb-4">
-      <label htmlFor={id} className="mb-2 block text-sm font-medium text-gray-700">
+    <div className="flex flex-col">
+      <label htmlFor={name} className="font-semibold text-gray-700 mb-2">
         {label}
       </label>
       <input
         type={type}
-        id={id}
-        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-yellow-500 focus:outline-none"
-        placeholder={placeholder}
+        name={name}
+        id={name}
         value={value}
         onChange={onChange}
-        required={required}
+        className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
       />
     </div>
   );
-}
+};
+
+export default FormInput;
