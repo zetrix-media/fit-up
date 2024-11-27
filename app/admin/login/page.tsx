@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/utils/supabaseClient';
 import Cookies from 'js-cookie';
 
 const AdminLoginPage = () => {

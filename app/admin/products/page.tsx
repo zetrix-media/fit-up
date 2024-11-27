@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaTrash, FaEdit, FaEye } from 'react-icons/fa';
+import ButtonWithoutIcons from '@/components/ButtonWithoutIcons';
 
 interface Product {
   id: number;
@@ -44,13 +45,7 @@ const ProductsPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Product List</h1>
-        <button
-          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 flex items-center"
-          onClick={() => window.location.href = '/admin/products/add'}
-        >
-          <span className="text-lg font-bold mr-2">+</span>
-          Add Product
-        </button>
+        <ButtonWithoutIcons text="Add Product" url="/admin/products/add" />
       </div>
 
       {/* Product Table */}
@@ -60,7 +55,7 @@ const ProductsPage = () => {
             <th className="border border-gray-300 px-4 py-2 text-center">Sl. No</th>
             <th className="border border-gray-300 px-4 py-2 text-center">Image</th>
             <th className="border border-gray-300 px-4 py-2">Product SKU</th>
-            <th className="border border-gray-300 px-4 py-2">Products Title</th>
+            <th className="border border-gray-300 px-4 py-2">Product Title</th>
             <th className="border border-gray-300 px-4 py-2 text-center">Quantity</th>
             <th className="border border-gray-300 px-4 py-2 text-center">Price</th>
             <th className="border border-gray-300 px-4 py-2 text-center">Actions</th>

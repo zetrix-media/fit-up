@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/utils/supabaseClient';
 
 export const useAuth = () => {
   const [admin, setAdmin] = useState<any | null>(null);
