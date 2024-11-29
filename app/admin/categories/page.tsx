@@ -13,7 +13,7 @@ export default async function CategoriesPage() {
         <ButtonWithoutIcons text="Add Category" url="/admin/categories/add" />
       </div>
       <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-6">
-        {categories.map((category: any) => (
+        {categories.map((category: { categoryid: string; categoryimage: string; categoryname: string; productcount: number }) => (
           <CategoryCard
             key={category.categoryid}
             imageUrl={category.categoryimage}

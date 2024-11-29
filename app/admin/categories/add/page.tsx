@@ -33,33 +33,36 @@ const AddCategoryPage = () => {
       const bucketName = 'products';
       const folderPath = `categories/${categoryImage.name}`;
 
-      // Upload image to Supabase storage
-      const { data: imageData, error: imageError } = await supabase.storage
+      // Upload the image to Supabase storage
+      const { data: imageData, error: uploadError } = await supabase.storage
         .from(bucketName)
         .upload(folderPath, categoryImage);
 
-      if (imageError) {
-        throw imageError;
+      if (uploadError) {
+        setError('Failed to upload image.');
+        setLoading(false);
+        return;
       }
 
-      // Construct the public URL of the uploaded image
-      const publicUrl = `https://khmsupnfosoalakcabzn.supabase.co/storage/v1/object/public/${bucketName}/${folderPath}`;
+      console.log('Uploaded image data:', imageData);
 
-      // Insert category data into Supabase
-      const { data, error } = await supabase
+      // Get the public URL of the uploaded image
+      const imageUrl = supabase.storage.from(bucketName).getPublicUrl(folderPath).data.publicUrl;
+
+      // Insert the new category into the database
+      const { error: insertError } = await supabase
         .from('categories')
-        .insert([{ categoryname: categoryName, categoryimage: publicUrl }]);
+        .insert([{ name: categoryName, image_url: imageUrl }]);
 
-      if (error) {
-        throw error;
+      if (insertError) {
+        setError('Failed to add category.');
+        setLoading(false);
+        return;
       }
 
-      setSuccess('Category added successfully!');
+      setSuccess('Category added successfully.');
       setCategoryName('');
       setCategoryImage(null);
-    } catch (error) {
-      setError('Error adding category. Please try again.');
-      console.error('Error adding category:', error);
     } finally {
       setLoading(false);
     }
@@ -68,8 +71,8 @@ const AddCategoryPage = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold mb-6">Add Category</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
           <label htmlFor="category-name" className="block text-sm font-medium">
             Category Name
           </label>
@@ -80,10 +83,9 @@ const AddCategoryPage = () => {
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
             className="w-full p-2 border rounded"
-            required
           />
         </div>
-        <div>
+        <div className="mb-4">
           <label htmlFor="category-image" className="block text-sm font-medium">
             Category Image
           </label>
@@ -93,18 +95,17 @@ const AddCategoryPage = () => {
             name="category-image"
             onChange={handleImageChange}
             className="w-full p-2 border rounded"
-            required
           />
         </div>
+        {error && <p className="text-red-500">{error}</p>}
+        {success && <p className="text-green-500">{success}</p>}
         <button
           type="submit"
-          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           disabled={loading}
         >
-          {loading ? 'Saving...' : 'Save Category'}
+          {loading ? 'Adding...' : 'Add Category'}
         </button>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-        {success && <p className="text-green-500 mt-2">{success}</p>}
       </form>
     </div>
   );
