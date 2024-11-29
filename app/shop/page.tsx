@@ -14,11 +14,11 @@ const ComingSoon: React.FC = () => {
 const styles = {
     container: {
         display: 'flex',
-        flexDirection: 'column' as 'column',
+        flexDirection: 'column' as const,
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        textAlign: 'center' as 'center',
+        textAlign: 'center' as const,
         backgroundColor: '#f0f0f0',
     },
     icon: {
