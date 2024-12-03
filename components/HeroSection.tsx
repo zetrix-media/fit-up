@@ -6,7 +6,7 @@ import Image from "next/image";
 const HeroSection = () => {
   return (
     <section className="relative bg-gray-100">
-      <div className="container mx-auto px-4 py-16 flex flex-col lg:flex-row items-center">
+      <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center">
         <div className="lg:w-1/2">
           <h1 className="text-4xl font-bold mb-4">
             Classic Exclusive <br />
@@ -17,7 +17,7 @@ const HeroSection = () => {
             Shop Now
           </button>
         </div>
-        <div className="lg:w-1/2">
+        <div className="lg:w-1/2 right">
           <Image
             src="/assets/hero-image.png" // Replace with your image URL
             alt="Women's Collection"
@@ -27,6 +27,13 @@ const HeroSection = () => {
           />
         </div>
       </div>
+      <style jsx>{`
+        .right {
+          display: flex;
+          flex-direction: column;
+          align-items: end;
+        }
+      `}</style>
     </section>
   );
 };

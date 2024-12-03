@@ -30,8 +30,8 @@ const AddCategoryPage = () => {
 
     try {
       // Specify the bucket and folder path
-      const bucketName = 'products';
-      const folderPath = `categories/${categoryImage.name}`;
+      const bucketName = 'categories';
+      const folderPath = `${categoryImage.name}`;
 
       // Upload the image to Supabase storage
       const { data: imageData, error: uploadError } = await supabase.storage

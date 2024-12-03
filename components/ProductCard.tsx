@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-// import { useRouter } from "next/navigation";
+import { FiHeart, FiShoppingCart } from "react-icons/fi";
 
 interface ProductCardProps {
   id: string;
@@ -11,8 +11,6 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ id, imageUrl, name, price }) => {
-  // const router = useRouter();
-
   const handleAddToCart = () => {
     console.log(`Product ${id} added to cart`);
   };
@@ -23,64 +21,95 @@ const ProductCard: React.FC<ProductCardProps> = ({ id, imageUrl, name, price }) 
 
   return (
     <div className="product-card">
-      <img src={imageUrl} alt={name} className="product-image" />
-      <div className="product-details">
-        <h3 className="product-name">{name}</h3>
-        <p className="product-price">${price}</p>
-        <div className="product-actions">
-          <button onClick={handleWishlist} className="wishlist-button" aria-label="Add to Wishlist">
-            ❤️
-          </button>
-          <button onClick={handleAddToCart} className="cart-button" aria-label="Add to Cart">
-            🛒
-          </button>
+      <div className="image-wrapper">
+        <img src={imageUrl} alt={name} className="product-image" />
+      </div>
+      <div className="product-info">
+        <div className="details">
+          <h3 className="product-name">{name}</h3>
+          <p className="product-price">${price}</p>
+        </div>
+        <div className="actions">
+            <button onClick={handleWishlist} className="wishlist-button" aria-label="Add to Wishlist">
+            <FiHeart/>
+            </button>
+            <button onClick={handleAddToCart} className="cart-button" aria-label="Add to Cart">
+            <FiShoppingCart/>
+            </button>
         </div>
       </div>
       <style jsx>{`
         .product-card {
-          background-color: #fff;
-          border-radius: 10px;
-          box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-          overflow: hidden;
+          width: 100%;
           max-width: 300px;
-          text-align: center;
+          background-color: #232323;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+          color: #fff;
           font-family: Arial, sans-serif;
         }
+
+        .image-wrapper {
+          background-color: #e9e9e9;
+          // padding: 16px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
         .product-image {
           width: 100%;
-          height: auto;
+          // max-height: 250px;
+          object-fit: contain;
+          border-radius: 8px 8px 0 0;
         }
-        .product-details {
+
+        .product-info {
+          background-color: #ffde03;
           padding: 16px;
-          background-color: #f9f9f9;
-        }
-        .product-name {
-          font-size: 18px;
-          font-weight: bold;
-          margin: 8px 0;
-        }
-        .product-price {
-          font-size: 16px;
-          color: #444;
-        }
-        .product-actions {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-top: 10px;
         }
+
+        .details {
+          flex-grow: 1;
+        }
+
+        .product-name {
+          font-size: 16px;
+          font-weight: 600;
+          margin: 0;
+          color: #000;
+        }
+
+        .product-price {
+          font-size: 14px;
+          margin: 4px 0 0;
+          color: #000;
+        }
+
+        .actions {
+          display: flex;
+          gap: 16px;
+        }
+
         .wishlist-button,
         .cart-button {
-          background-color: #ffde03;
+          background-color: transparent;
           border: none;
-          padding: 8px;
-          border-radius: 5px;
+          color: #000;
+          font-size: 25px;
           cursor: pointer;
-          font-size: 16px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
+
         .wishlist-button:hover,
         .cart-button:hover {
-          background-color: #ffd700;
+          color: #444;
         }
       `}</style>
     </div>
