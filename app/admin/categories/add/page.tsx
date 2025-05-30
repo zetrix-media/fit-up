@@ -39,6 +39,7 @@ const AddCategoryPage = () => {
         .upload(folderPath, categoryImage);
 
       if (uploadError) {
+        console.error('Image upload error:', uploadError); // Log the upload error
         setError('Failed to upload image.');
         setLoading(false);
         return;
@@ -52,9 +53,10 @@ const AddCategoryPage = () => {
       // Insert the new category into the database
       const { error: insertError } = await supabase
         .from('categories')
-        .insert([{ name: categoryName, image_url: imageUrl }]);
+        .insert([{ categoryname: categoryName, categoryimage: imageUrl }]);
 
       if (insertError) {
+        console.error('Database insert error:', insertError); // Log the insert error
         setError('Failed to add category.');
         setLoading(false);
         return;

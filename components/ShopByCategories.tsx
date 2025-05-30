@@ -2,14 +2,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CategoryCard from "@/components/CategoryCard";
+import CategoryCardHome from "@/components/CategoryCardHome";
 import { fetchCategories } from "@/utils/fetchCategories";
 
 type Category = {
   categoryid: string;
   categoryimage: string;
   categoryname: string;
-  productcount: number;
 };
 
 const ShopByCategories = () => {
@@ -28,15 +27,19 @@ const ShopByCategories = () => {
   }, []);
 
   return (
-    <section className="container mx-auto px-4 py-16">
-      <h2 className="text-2xl font-bold mb-6">Shop by Categories</h2>
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
+    <section className="w-full py-16 px-4">
+      <div className="max-w-screen-xl mx-auto text-center mb-12">
+        <h2 className="text-3xl font-extrabold text-[#1C2340] uppercase tracking-wide">
+          Top Categories
+        </h2>
+      </div>
+
+      <div className="max-w-screen-xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 justify-items-center">
         {categories.map((category) => (
-          <CategoryCard
+          <CategoryCardHome
             key={category.categoryid}
             imageUrl={category.categoryimage}
             name={category.categoryname}
-            productCount={category.productcount}
           />
         ))}
       </div>

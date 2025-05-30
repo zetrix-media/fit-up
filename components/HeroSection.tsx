@@ -5,35 +5,34 @@ import Image from "next/image";
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-gray-100">
-      <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center">
-        <div className="lg:w-1/2">
-          <h1 className="text-4xl font-bold mb-4">
-            Classic Exclusive <br />
-            <span className="text-yellow-500">Women&apos;s Collection</span>
+    <section
+      className="w-full flex items-center"
+      style={{
+        background: "linear-gradient(to right, #F8ED79, #FEDA0A)",
+        height: "700px",
+      }}
+    >
+      <div className="container mx-auto px-4 flex flex-col-reverse lg:flex-row items-center justify-between w-full h-full">
+        <div className="lg:w-5/7 text-center lg:text-left">
+          <p className="text-[#585858] text-xl mb-2">
+            Precision in Every Stitch:
+          </p>
+          <h1 className="text-3xl md:text-6xl font-extrabold text-[#000000] leading-tight">
+            Quality Medical Apparel for Healthcare Professionals
           </h1>
-          <p className="text-lg text-gray-700 mb-6">UPTO 40% OFF</p>
-          <button className="bg-yellow-500 text-gray-900 px-6 py-3 rounded-lg font-bold">
-            Shop Now
-          </button>
         </div>
-        <div className="lg:w-1/2 right">
+
+        <div className="lg:w-1/2 flex justify-end items-end h-full">
           <Image
-            src="/assets/hero-image.png" // Replace with your image URL
-            alt="Women's Collection"
+            src="/assets/hero-image.png"
+            alt="Medical Professional"
             width={500}
             height={500}
-            className="rounded-lg"
+            className="object-contain"
+            style={{ objectPosition: "bottom" }}
           />
         </div>
       </div>
-      <style jsx>{`
-        .right {
-          display: flex;
-          flex-direction: column;
-          align-items: end;
-        }
-      `}</style>
     </section>
   );
 };
