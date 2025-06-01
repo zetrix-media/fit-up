@@ -1,4 +1,4 @@
-//componenets/LatestProducts
+// components/NewArrivals
 "use client";
 
 import { useEffect, useState } from "react";
@@ -19,11 +19,11 @@ type Product = {
   };
 };
 
-interface LatestProductsProps {
+interface NewArrivalsProps {
   limit?: number;
 }
 
-const LatestProducts = ({ limit = 4 }: LatestProductsProps) => {
+const NewArrivals = ({ limit = 12 }: NewArrivalsProps) => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -38,14 +38,14 @@ const LatestProducts = ({ limit = 4 }: LatestProductsProps) => {
 
   return (
     <section className="latest-products-wrapper">
-      <h2 className="section-title">LATEST PRODUCTS</h2>
+      <h2 className="section-title">NEW ARRIVALS</h2>
       <div className="products-grid">
         {products.map((product) => (
           <NewProductCard
             key={product.variantid}
             id={product.variantid}
             imageUrl={product.mainimageurl}
-            name={product.products?.name || product.variantname} // Use product name from joined table
+            name={product.products?.name || product.variantname}
             price={product.price}
             colorVariants={dummyColors}
           />
@@ -69,12 +69,19 @@ const LatestProducts = ({ limit = 4 }: LatestProductsProps) => {
           width: 75vw;
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 15px;
+          row-gap: 32px;      /* vertical gap */
+          column-gap: 15px;   /* horizontal gap */
           margin: auto;
+        }
+
+        @media (min-width: 1024px) {
+          .products-grid {
+            grid-template-columns: repeat(4, 1fr);
+          }
         }
       `}</style>
     </section>
   );
 };
 
-export default LatestProducts;
+export default NewArrivals;

@@ -51,10 +51,10 @@ const NewProductCard: React.FC<NewProductCardProps> = ({
       <style jsx>{`
         .new-product-card {
           width: 100%;
-          max-width: 300px;
-          border-radius: 16px;
+          // max-width: 300px;
+          // border-radius: 16px;
           overflow: hidden;
-          background-color: #1e1e1e;
+          background-color:rgba(30, 30, 30, 0);
           position: relative;
           font-family: Arial, sans-serif;
         }
@@ -76,43 +76,44 @@ const NewProductCard: React.FC<NewProductCardProps> = ({
         .description-section {
           height: 22%;
           backdrop-filter: blur(6px);
-          background-color: rgba(0, 0, 0, 0.3);
+          background-color: rgba(0, 0, 0, 0);
           display: flex;
           flex-direction: column;
-          align-items: center;
+          align-items: start;
           padding: 12px;
           gap: 10px;
         }
 
         .color-variants {
           display: flex;
-          gap: 10px;
+          gap: 24px;
           margin-top: 10px;
           margin-bottom: 10px;
         }
 
         .color-dot {
-          width: 14px;
-          height: 14px;
+          width: 22px;
+          height: 22px;
           border-radius: 50%;
           border: 1px solid #fff;
           cursor: pointer;
         }
 
         .product-text {
-          text-align: center;
+          text-align: left;
         }
 
         .product-name {
-          font-size: 16px;
-          font-weight: 600;
-          color: #fff;
+          font-size: 18px;
+          font-weight: 400;
+          color: #000;
           margin: 0;
         }
 
         .product-price {
-          font-size: 14px;
-          color: #fff;
+          font-size: 22px;
+          font-weight: 800;
+          color: #000;
           margin: 4px 0 0;
         }
       `}</style>
