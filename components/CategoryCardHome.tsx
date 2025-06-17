@@ -9,8 +9,8 @@ type CategoryCardHomeProps = {
 
 const CategoryCardHome = ({ imageUrl, name }: CategoryCardHomeProps) => {
   return (
-    <div className="bg-[#FFD800] p-6 flex flex-col items-center justify-between rounded-md shadow-md">
-      <div className="relative w-32 h-32 mb-4">
+    <div className="bg-[#FFD800] px-10 py-6 flex flex-col items-center justify-between rounded-md shadow-md">
+      <div className="relative w-32 h-32">
         <Image
           src={imageUrl}
           alt={name}
