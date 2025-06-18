@@ -34,13 +34,14 @@ const ShopByCategories = () => {
         </h2>
       </div>
 
-      <div className="max-w-screen-xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 justify-items-center">
+      <div className="max-w-screen-xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8 md:gap-10 px-2 sm:px-4 items-stretch">
         {categories.map((category) => (
-          <CategoryCardHome
-            key={category.categoryid}
-            imageUrl={category.categoryimage}
-            name={category.categoryname}
-          />
+          <div key={category.categoryid} className="w-full h-full">
+            <CategoryCardHome
+              imageUrl={category.categoryimage}
+              name={category.categoryname}
+            />
+          </div>
         ))}
       </div>
     </section>

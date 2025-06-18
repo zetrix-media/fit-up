@@ -1,3 +1,4 @@
+// components/CategoryCardHome
 "use client";
 
 import Image from "next/image";
@@ -9,8 +10,8 @@ type CategoryCardHomeProps = {
 
 const CategoryCardHome = ({ imageUrl, name }: CategoryCardHomeProps) => {
   return (
-    <div className="bg-[#FFD800] px-10 py-6 flex flex-col items-center justify-between rounded-md shadow-md">
-      <div className="relative w-32 h-32">
+    <div className="bg-[#FFD800] px-6 py-6 flex flex-col items-center justify-between rounded-md shadow-md w-full min-h-[240px] md:min-h-[260px]">
+      <div className="relative w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32">
         <Image
           src={imageUrl}
           alt={name}
@@ -18,9 +19,11 @@ const CategoryCardHome = ({ imageUrl, name }: CategoryCardHomeProps) => {
           className="object-contain"
         />
       </div>
-      <div className="relative mt-4">
-        <div className="bg-white px-6 py-2 transform skew-x-[-12deg]">
-          <h2 className="text-black font-semibold text-center text-base transform skew-x-[12deg]">
+
+      {/* Fixed-height container for name */}
+      <div className="relative mt-4 w-full flex items-end h-[52px] md:h-[56px] lg:h-[60px]">
+        <div className="bg-white px-4 py-2 transform skew-x-[-12deg] w-full">
+          <h2 className="text-black font-semibold text-center text-sm md:text-base transform skew-x-[12deg] leading-tight">
             {name}
           </h2>
         </div>
