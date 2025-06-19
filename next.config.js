@@ -10,4 +10,10 @@ module.exports = {
       },
     ],
   },
+
+  // 👇 Add this section to suppress the build-time "critical dependency" warning
+  webpack(config) {
+    config.module.exprContextCritical = false;
+    return config;
+  },
 };

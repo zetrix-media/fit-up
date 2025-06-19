@@ -1,33 +1,33 @@
 // components/NewProductCard
+// components/NewProductCard.tsx
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 
 interface NewProductCardProps {
   id: string;
   imageUrl: string;
   name: string;
   price: number;
-  colorVariants: string[]; // Array of hex codes or color names
+  colorVariants: string[];
 }
 
 const NewProductCard: React.FC<NewProductCardProps> = ({
-  // id,
+  id,
   imageUrl,
   name,
   price,
   colorVariants,
 }) => {
-  // const handleAddToCart = () => {
-  //   console.log(`Product ${id} added to cart`);
-  // };
+  const router = useRouter();
 
-  // const handleWishlist = () => {
-  //   console.log(`Product ${id} added to wishlist`);
-  // };
+  const handleClick = () => {
+    router.push(`/product-details/${id}`);
+  };
 
   return (
-    <div className="new-product-card">
+    <div className="new-product-card" onClick={handleClick}>
       <div className="image-section">
         <img src={imageUrl} alt={name} className="product-image" />
       </div>
@@ -51,10 +51,9 @@ const NewProductCard: React.FC<NewProductCardProps> = ({
       <style jsx>{`
         .new-product-card {
           width: 100%;
-          // max-width: 300px;
-          // border-radius: 16px;
+          cursor: pointer;
           overflow: hidden;
-          background-color:rgba(30, 30, 30, 0);
+          background-color: rgba(30, 30, 30, 0);
           position: relative;
           font-family: Arial, sans-serif;
         }
