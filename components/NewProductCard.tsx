@@ -1,5 +1,4 @@
-// components/NewProductCard
-// components/NewProductCard.tsx
+// components/NewProductCard 
 "use client";
 
 import React from "react";

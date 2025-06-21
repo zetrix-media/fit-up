@@ -1,40 +1,39 @@
-import React from 'react';
-import { FaClock } from 'react-icons/fa';
+// app/shop/page.tsx
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+// import CategoryTabs from '@/components/CategoryTabs';
+import ClientCategoryView from '@/components/ClientCategoryView';
 
-const ComingSoon: React.FC = () => {
-    return (
-        <div style={styles.container}>
-            <FaClock style={styles.icon} />
-            <h1 style={styles.heading}>Coming Soon</h1>
-            <p style={styles.text}>We are working hard to bring you this page. Stay tuned!</p>
-        </div>
-    );
-};
+export default async function ShopPage() {
+  const supabase = createServerComponentClient({ cookies });
 
-const styles = {
-    container: {
-        display: 'flex',
-        flexDirection: 'column' as const,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        textAlign: 'center' as const,
-        backgroundColor: '#f0f0f0',
-    },
-    icon: {
-        fontSize: '5rem',
-        color: '#333',
-        marginBottom: '1rem',
-    },
-    heading: {
-        fontSize: '2.5rem',
-        color: '#333',
-        marginBottom: '1rem',
-    },
-    text: {
-        fontSize: '1.25rem',
-        color: '#666',
-    },
-};
+  const { data: categories } = await supabase
+    .from('categories')
+    .select('categoryid, categoryname')
+    .order('categoryid');
 
-export default ComingSoon;
+  const defaultCategoryId = categories?.[0]?.categoryid;
+
+  const { data: defaultProducts } = await supabase
+    .from('products')
+    .select('productid, name, productvariants(mainimageurl, color, price)')
+    .eq('categoryid', defaultCategoryId)
+    .order('createdat', { ascending: false });
+
+  return (
+    <>
+    <Navbar />
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      <h1 className="text-center text-3xl font-semibold mb-8">Shop by Category</h1>
+      <ClientCategoryView
+        categories={categories ?? []}
+        defaultProducts={defaultProducts ?? []}
+      />
+    </div>
+
+    <Footer />
+    </>
+  );
+}
