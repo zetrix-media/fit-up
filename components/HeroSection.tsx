@@ -21,10 +21,10 @@ type Slide = {
 const slides: Slide[] = [
   {
     id: 1,
-    bg: "linear-gradient(to right, #F8ED79, #FEDA0A)",
-    title: "Quality Medical Apparel for Healthcare Professionals",
-    subtitle: "Precision in Every Stitch:",
-    imageUrl: "/assets/hero-image.png",
+    bg: "radial-gradient(ellipse at -20% 115%, #A9E8F2 0%, #FAFEFF 100%)",
+    title: "Comfort Meets Care",
+    subtitle: "Premium Medical Uniforms for Everyday Heroes",
+    imageUrl: "/assets/heroImg1.png",
     button: {
       label: "Shop Now",
       url: "/shop",
@@ -33,10 +33,11 @@ const slides: Slide[] = [
   },
   {
     id: 2,
-    bg: "linear-gradient(to right, #FFD6E8, #FF69B4)",
-    title: "Designed for Comfort, Built for Performance",
-    subtitle: "Trusted by Thousands of Medical Pros:",
-    imageUrl: "/assets/hero-image.png",
+    bg: "radial-gradient(ellipse at -20% 115%, #A9E8F2 0%, #FAFEFF 100%)",
+    title: "Style in Every Stitch",
+    subtitle:
+      "Modern fits, vibrant colors, and durable fabrics – built for the demands of healthcare.",
+    imageUrl: "/assets/heroImg2.png",
     button: {
       label: "Explore Collection",
       url: "/collection",
@@ -45,10 +46,11 @@ const slides: Slide[] = [
   },
   {
     id: 3,
-    bg: "linear-gradient(to right, #D1FFF3, #4BE1C0)",
-    title: "Engineered for Everyday Excellence",
-    subtitle: "Smart Fit. Lasting Style.",
-    imageUrl: "/assets/hero-image.png",
+    bg: "radial-gradient(ellipse at -20% 115%, #A9E8F2 0%, #FAFEFF 100%)",
+    title: "Gear Up with Confidence",
+    subtitle:
+      "From hospitals to home care, our uniforms deliver performance, comfort, and confidence.",
+    imageUrl: "/assets/heroImg3.png",
     button: {
       label: "Browse Styles",
       url: "/styles",
@@ -137,7 +139,9 @@ const HeroSection = () => {
                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-[#000000] leading-tight mb-4 order-1">
                   {slide.title}
                 </h1>
-                <p className="text-[#585858] text-lg mb-4 order-2">{slide.subtitle}</p>
+                <p className="text-[#585858] text-lg mb-4 order-2">
+                  {slide.subtitle}
+                </p>
                 <div className="order-3">
                   <a
                     href={slide.button.url}
@@ -152,15 +156,18 @@ const HeroSection = () => {
               </div>
 
               {/* Image Section */}
-              <div className="w-full lg:w-2/5 flex justify-center lg:justify-end items-end h-full order-1 lg:order-2">
-                <Image
-                  src={slide.imageUrl}
-                  alt={slide.title}
-                  width={500}
-                  height={500}
-                  className="object-contain"
-                  style={{ objectPosition: "bottom" }}
-                />
+              <div className="w-full lg:w-2/5 flex justify-center lg:justify-end items-stretch h-full order-1 lg:order-2">
+                <div className="relative w-full h-full image-wrapper">
+                  <Image
+                    src={slide.imageUrl}
+                    alt={slide.title}
+                    fill
+                    className="object-cover"
+                    style={{ objectPosition: "bottom" }}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
+                  />
+                </div>
               </div>
             </div>
           </div>
