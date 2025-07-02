@@ -45,6 +45,7 @@ export const SizeSelector: React.FC<SizeSelectorProps> = ({
 
           return (
             <button
+              type="button"
               key={size}
               disabled={isDisabled}
               onClick={() => handleClick(size)}

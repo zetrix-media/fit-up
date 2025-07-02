@@ -64,10 +64,10 @@ export default function ImageUploader({ onReady }: Props) {
 
     for (const image of images) {
       const ext = image.file.name.split('.').pop()
-      const filePath = `products/${uuidv4()}.${ext}`
+      const filePath = `images/${uuidv4()}.${ext}`
 
       const { error } = await supabase.storage
-        .from('product-images')
+        .from('products')
         .upload(filePath, image.file)
 
       if (error) {
@@ -76,7 +76,7 @@ export default function ImageUploader({ onReady }: Props) {
       }
 
       const { data } = supabase.storage
-        .from('product-images')
+        .from('products')
         .getPublicUrl(filePath)
 
       uploaded.push({

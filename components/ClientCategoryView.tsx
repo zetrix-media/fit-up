@@ -14,34 +14,32 @@ type Category = {
 type Product = {
   productid: number;
   name: string;
-  productvariants: {
-    mainimageurl: string;
-    price: number;
-    color: string;
-  }[];
 };
 
 export default function ClientCategoryView({
   categories,
-  defaultProducts,
 }: {
   categories: Category[];
-  defaultProducts: Product[];
 }) {
   const [selectedCategoryId, setSelectedCategoryId] = useState(categories[0]?.categoryid);
-  const [products, setProducts] = useState<Product[]>(defaultProducts);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     if (!selectedCategoryId) return;
 
     const fetchProducts = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('products')
-        .select('productid, name, productvariants(mainimageurl, color, price)')
+        .select('productid, name')
         .eq('categoryid', selectedCategoryId)
         .order('createdat', { ascending: false });
 
-      if (data) setProducts(data as Product[]);
+      if (error) {
+        console.error("Error fetching products by category:", error);
+        return;
+      }
+
+      setProducts(data as Product[]);
     };
 
     fetchProducts();
@@ -56,21 +54,14 @@ export default function ClientCategoryView({
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
-        {products.map((product) => {
-          const mainVariant = product.productvariants?.[0];
-          const colorVariants = product.productvariants?.map((v) => v.color) || [];
-
-          return (
+        {products
+          .filter((p) => p.productid !== undefined && p.productid !== null)
+          .map((product) => (
             <NewProductCard
               key={product.productid}
-              id={product.productid.toString()}
-              imageUrl={mainVariant?.mainimageurl || '/assets/placeholder.jpg'}
-              name={product.name}
-              price={mainVariant?.price || 0}
-              colorVariants={colorVariants}
+              productId={product.productid.toString()}
             />
-          );
-        })}
+          ))}
       </div>
     </>
   );

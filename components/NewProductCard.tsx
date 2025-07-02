@@ -1,49 +1,129 @@
 // components/NewProductCard 
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { supabase } from "@/utils/supabaseClient";
+import { ColorSelector } from "./ColorSelector";
 
-interface NewProductCardProps {
+interface ProductVariant {
   id: string;
   imageUrl: string;
-  name: string;
-  price: number;
-  colorVariants: string[];
+  color: {
+    name: string;
+    hex: string;
+  };
 }
 
-const NewProductCard: React.FC<NewProductCardProps> = ({
-  id,
-  imageUrl,
-  name,
-  price,
-  colorVariants,
-}) => {
+interface ProductInfo {
+  name: string;
+  price: number;
+}
+
+interface NewProductCardProps {
+  productId: string;
+}
+
+const NewProductCard: React.FC<NewProductCardProps> = ({ productId }) => {
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
+  const [product, setProduct] = useState<ProductInfo | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleClick = () => {
-    router.push(`/product-details/${id}`);
+  useEffect(() => {
+    const fetchProductAndVariants = async () => {
+      const { data: productData, error: productError } = await supabase
+        .from("products")
+        .select("name, baseprice")
+        .eq("productid", productId)
+        .single();
+
+      if (productError) {
+        console.error("Error fetching product:", productError);
+        return;
+      }
+
+      setProduct({
+        name: productData.name,
+        price: Number(productData.baseprice),
+      });
+
+      const { data: variantsData, error: variantError } = await supabase
+        .from("productvariants")
+        .select("variantid, mainimageurl, colorName, colorCode")
+        .eq("productid", productId)
+        .order("variantid");
+
+      if (variantError) {
+        console.error("Error fetching variants:", variantError);
+        return;
+      }
+
+      const formattedVariants: ProductVariant[] = variantsData.map((variant) => ({
+        id: variant.variantid.toString(),
+        imageUrl: variant.mainimageurl || "/assets/placeholder.jpg",
+        color: {
+          name: variant.colorName || "Unknown",
+          hex: variant.colorCode || "#999999",
+        },
+      }));
+
+      setVariants(formattedVariants);
+      if (formattedVariants.length > 0) {
+        setSelectedVariant(formattedVariants[0]);
+        setImageSrc(formattedVariants[0].imageUrl);
+      }
+    };
+
+    if (productId) {
+      fetchProductAndVariants();
+    }
+  }, [productId]);
+
+  const handleColorSelect = (selectedColors: { name: string; hex: string }[]) => {
+    const selectedHex = selectedColors[0].hex;
+    const matchedVariant = variants.find((v) => v.color.hex === selectedHex);
+    if (matchedVariant) {
+      setSelectedVariant(matchedVariant);
+      setImageSrc(matchedVariant.imageUrl);
+    }
   };
+
+  const handleClick = () => {
+    if (selectedVariant) {
+      router.push(`/product-details/${selectedVariant.id}`);
+    }
+  };
+
+  if (!product || !selectedVariant || !imageSrc) return null;
 
   return (
     <div className="new-product-card" onClick={handleClick}>
       <div className="image-section">
-        <img src={imageUrl} alt={name} className="product-image" />
+        <Image
+          src={imageSrc}
+          alt={product.name}
+          width={400}
+          height={400}
+          className="product-image"
+          style={{ objectFit: "cover", width: "100%", height: "100%" }}
+          onError={() => setImageSrc("/assets/placeholder.jpg")}
+        />
       </div>
-      <div className="description-section">
+      <div className="description-section" onClick={(e) => e.stopPropagation()}>
         <div className="color-variants">
-          {colorVariants.map((color, index) => (
-            <span
-              key={index}
-              className="color-dot"
-              style={{ backgroundColor: color }}
-              aria-label={`Color option ${index + 1}`}
-            />
-          ))}
+          <ColorSelector
+            selectedColors={[selectedVariant.color]}
+            onSelect={handleColorSelect}
+            availableColors={variants.map((v) => v.color)}
+            multiple={false}
+          />
         </div>
         <div className="product-text">
-          <h3 className="product-name">{name}</h3>
-          <p className="product-price">${price}</p>
+          <h3 className="product-name">{product.name}</h3>
+          <p className="product-price">${product.price.toFixed(2)}</p>
         </div>
       </div>
 
@@ -55,6 +135,8 @@ const NewProductCard: React.FC<NewProductCardProps> = ({
           background-color: rgba(30, 30, 30, 0);
           position: relative;
           font-family: Arial, sans-serif;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .image-section {
@@ -66,35 +148,23 @@ const NewProductCard: React.FC<NewProductCardProps> = ({
         }
 
         .product-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+          border-radius: 0;
         }
 
         .description-section {
           height: 22%;
           backdrop-filter: blur(6px);
-          background-color: rgba(0, 0, 0, 0);
+          background-color: rgba(255, 255, 255, 0.4);
           display: flex;
           flex-direction: column;
-          align-items: start;
+          align-items: flex-start;
           padding: 12px;
           gap: 10px;
         }
 
         .color-variants {
           display: flex;
-          gap: 24px;
-          margin-top: 10px;
-          margin-bottom: 10px;
-        }
-
-        .color-dot {
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          border: 1px solid #fff;
-          cursor: pointer;
+          gap: 20px;
         }
 
         .product-text {
@@ -102,15 +172,15 @@ const NewProductCard: React.FC<NewProductCardProps> = ({
         }
 
         .product-name {
-          font-size: 18px;
-          font-weight: 400;
+          font-size: 16px;
+          font-weight: 500;
           color: #000;
           margin: 0;
         }
 
         .product-price {
-          font-size: 22px;
-          font-weight: 800;
+          font-size: 20px;
+          font-weight: 700;
           color: #000;
           margin: 4px 0 0;
         }

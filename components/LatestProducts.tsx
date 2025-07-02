@@ -3,53 +3,44 @@
 
 import { useEffect, useState } from "react";
 import NewProductCard from "@/components/NewProductCard";
-import { fetchProducts } from "@/utils/fetchProducts";
+import { supabase } from "@/utils/supabaseClient"; // Adjust if your Supabase client lives elsewhere
 
 type Product = {
-  variantid: string;
-  productid: string;
-  variantname: string;
-  mainimageurl: string;
-  price: number;
-  products: {
-    name: string;
-    description: string;
-    categoryid: string;
-    brandid: string;
-  };
+  productid: number;
+  name: string;
 };
 
-interface LatestProductsProps {
-  limit?: number;
-}
-
-const LatestProducts = ({ limit = 4 }: LatestProductsProps) => {
+const LatestProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      const data = await fetchProducts(limit);
+    const loadLatestProducts = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("productid, name")
+        .order("productid", { ascending: false })
+        .limit(4);
+
+      if (error) {
+        console.error("Error fetching latest products:", error);
+        return;
+      }
+
       setProducts(data);
     };
-    loadProducts();
-  }, [limit]);
 
-  const dummyColors = ["#000000", "#ff6b6b", "#f5b9e5", "#8b8c4a", "#98c6ff", "#4361ee"];
+    loadLatestProducts();
+  }, [supabase]);
 
   return (
     <section className="latest-products-wrapper">
       <h2 className="section-title">LATEST PRODUCTS</h2>
       <div className="products-grid">
-        {products.map((product) => (
-          <NewProductCard
-            key={product.variantid}
-            id={product.variantid}
-            imageUrl={product.mainimageurl}
-            name={product.products?.name || product.variantname} // Use product name from joined table
-            price={product.price}
-            colorVariants={dummyColors}
-          />
-        ))}
+        {products
+          .filter((p) => p.productid !== undefined && p.productid !== null)
+          .map((product) => (
+            <NewProductCard key={product.productid} productId={product.productid.toString()} />
+          ))}
       </div>
 
       <style jsx>{`
@@ -69,8 +60,23 @@ const LatestProducts = ({ limit = 4 }: LatestProductsProps) => {
           width: 75vw;
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 15px;
+          row-gap: 32px;
+          column-gap: 15px;
           margin: auto;
+          align-items: stretch; /* Ensures all grid items stretch to same height */
+        }
+
+        /* Make all product cards the same height */
+        :global(.product-card) {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        @media (min-width: 1024px) {
+          .products-grid {
+            grid-template-columns: repeat(4, 1fr);
+          }
         }
       `}</style>
     </section>

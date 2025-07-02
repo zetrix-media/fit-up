@@ -3,20 +3,12 @@
 
 import { useEffect, useState } from "react";
 import NewProductCard from "@/components/NewProductCard";
-import { fetchProducts } from "@/utils/fetchProducts";
+import { supabase } from "@/utils/supabaseClient"; // Use supabase directly
 
 type Product = {
-  variantid: string;
-  productid: string;
-  variantname: string;
-  mainimageurl: string;
-  price: number;
-  products: {
-    name: string;
-    description: string;
-    categoryid: string;
-    brandid: string;
-  };
+  productid: number;
+  name: string;
+  // Add other fields if needed
 };
 
 interface NewArrivalsProps {
@@ -28,28 +20,31 @@ const NewArrivals = ({ limit = 12 }: NewArrivalsProps) => {
 
   useEffect(() => {
     const loadProducts = async () => {
-      const data = await fetchProducts(limit);
+      const { data, error } = await supabase
+        .from("products")
+        .select("productid, name")
+        .order("productid", { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        console.error("Error fetching new arrivals:", error);
+        return;
+      }
+
       setProducts(data);
     };
     loadProducts();
   }, [limit]);
 
-  const dummyColors = ["#000000", "#ff6b6b", "#f5b9e5", "#8b8c4a", "#98c6ff", "#4361ee"];
-
   return (
     <section className="latest-products-wrapper">
       <h2 className="section-title">NEW ARRIVALS</h2>
       <div className="products-grid">
-        {products.map((product) => (
-          <NewProductCard
-            key={product.variantid}
-            id={product.variantid}
-            imageUrl={product.mainimageurl}
-            name={product.products?.name || product.variantname}
-            price={product.price}
-            colorVariants={dummyColors}
-          />
-        ))}
+        {products
+          .filter((p) => p.productid !== undefined && p.productid !== null)
+          .map((product) => (
+            <NewProductCard key={product.productid} productId={product.productid.toString()} />
+          ))}
       </div>
 
       <style jsx>{`
@@ -69,8 +64,8 @@ const NewArrivals = ({ limit = 12 }: NewArrivalsProps) => {
           width: 75vw;
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          row-gap: 32px;      /* vertical gap */
-          column-gap: 15px;   /* horizontal gap */
+          row-gap: 32px;
+          column-gap: 15px;
           margin: auto;
         }
 
