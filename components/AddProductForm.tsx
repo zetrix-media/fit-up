@@ -141,27 +141,28 @@ const AddProductForm = () => {
       const uploader = variantUploadRefs.current[color.hex];
       const { mainImageUrl } = uploader
         ? await uploader.getUploadFunction()
-        : // : { mainImageUrl: "", galleryUrls: [] };
-          { mainImageUrl: "" };
+        : { mainImageUrl: "" };
 
-      for (const size of variantSizes[color.hex]) {
-        const variant = {
-          productid,
-          colorCode: color.hex,
-          colorName: color.name,
-          size,
-          price: Number(price),
-          stock: Number(stock),
-          mainimageurl: mainImageUrl || "",
-        };
+      const sizes = variantSizes[color.hex] || [];
+      const sizeString = sizes.join(","); // "S,M,L"
+      const variant = {
+        productid: productid,
+        colorCode: color.hex,
+        colorName: color.name,
+        size: sizeString,
+        price: Number(price),
+        stock: Number(stock),
+        mainimageurl: mainImageUrl || "",
+        createdat: new Date().toISOString(),
+        updatedat: new Date().toISOString(),
+      };
 
-        const { error: variantError } = await supabase
-          .from("productvariants")
-          .insert(variant);
+      const { error: variantError } = await supabase
+        .from("productvariants")
+        .insert([variant]);
 
-        if (variantError) {
-          console.error("Error inserting variant:", variantError);
-        }
+      if (variantError) {
+        console.error("Error inserting variant:", variantError);
       }
     }
 
