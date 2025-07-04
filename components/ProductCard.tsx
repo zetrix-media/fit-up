@@ -1,117 +1,53 @@
-"use client";
+import Image from 'next/image';
+import styles from './ProductCard.module.css'; // Import CSS Module
 
-import React from "react";
-import { FiHeart, FiShoppingCart } from "react-icons/fi";
-
+// Define types for the component's props
 interface ProductCardProps {
-  id: string;
   imageUrl: string;
-  name: string;
-  price: number;
+  productTitle: string;
+  price: string; // Keeping price as string as it's displayed with a dollar sign
+  colors: string[]; // Array of color hex codes or names
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ id, imageUrl, name, price }) => {
-  const handleAddToCart = () => {
-    console.log(`Product ${id} added to cart`);
-  };
-
-  const handleWishlist = () => {
-    console.log(`Product ${id} added to wishlist`);
-  };
-
+const ProductCard: React.FC<ProductCardProps> = ({ imageUrl, productTitle, price, colors }) => {
   return (
-    <div className="product-card">
-      <div className="image-wrapper">
-        <img src={imageUrl} alt={name} className="product-image" />
+    <div className={styles.productCard}>
+      <div className={styles.imageContainer}>
+        {/*
+          When using next/image with TypeScript, it's good practice to provide
+          width and height, especially with layout="responsive" or layout="fill".
+          If the image dimensions are dynamic or unknown at build time,
+          you might need to set 'layout="fill"' and wrap it in a parent
+          with defined dimensions, or use 'unoptimized' prop if optimization
+          is not critical and you just need to display.
+          For exact replication of the design, a fixed aspect ratio or known
+          dimensions from the image are helpful.
+          Here, I'm using placeholder width/height that give a reasonable aspect ratio
+          similar to the image provided. Adjust these based on your actual image and design needs.
+        */}
+        <Image
+          src={imageUrl}
+          alt={productTitle}
+          width={400} // Example width, adjust as per your image's intrinsic size or desired display size
+          height={600} // Example height, adjust as per your image's intrinsic size or desired display size
+          layout="responsive" // Makes the image responsive within its container
+          objectFit="cover" // Ensures the image covers the area, cropping if necessary
+        />
       </div>
-      <div className="product-info">
-        <div className="details">
-          <h3 className="product-name">{name}</h3>
-          <p className="product-price">${price}</p>
-        </div>
-        <div className="actions">
-            <button onClick={handleWishlist} className="wishlist-button" aria-label="Add to Wishlist">
-            <FiHeart/>
-            </button>
-            <button onClick={handleAddToCart} className="cart-button" aria-label="Add to Cart">
-            <FiShoppingCart/>
-            </button>
-        </div>
+
+      <div className={styles.colorSwatches}>
+        {colors.map((color, index) => (
+          <div
+            key={index}
+            className={styles.colorSwatch}
+            style={{ backgroundColor: color }}
+            // You might want to add onClick handlers here for actual color selection in a real app
+          ></div>
+        ))}
       </div>
-      <style jsx>{`
-        .product-card {
-          width: 100%;
-          max-width: 300px;
-          background-color: #232323;
-          border-radius: 16px;
-          overflow: hidden;
-          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-          color: #fff;
-          font-family: Arial, sans-serif;
-        }
 
-        .image-wrapper {
-          background-color: #e9e9e9;
-          // padding: 16px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .product-image {
-          width: 100%;
-          // max-height: 250px;
-          object-fit: contain;
-          border-radius: 8px 8px 0 0;
-        }
-
-        .product-info {
-          background-color: #ffde03;
-          padding: 16px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .details {
-          flex-grow: 1;
-        }
-
-        .product-name {
-          font-size: 16px;
-          font-weight: 600;
-          margin: 0;
-          color: #000;
-        }
-
-        .product-price {
-          font-size: 14px;
-          margin: 4px 0 0;
-          color: #000;
-        }
-
-        .actions {
-          display: flex;
-          gap: 16px;
-        }
-
-        .wishlist-button,
-        .cart-button {
-          background-color: transparent;
-          border: none;
-          color: #000;
-          font-size: 25px;
-          cursor: pointer;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .wishlist-button:hover,
-        .cart-button:hover {
-          color: #444;
-        }
-      `}</style>
+      <h3 className={styles.productTitle}>{productTitle}</h3>
+      <p className={styles.productPrice}>${price}</p>
     </div>
   );
 };

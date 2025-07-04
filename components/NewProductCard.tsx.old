@@ -1,13 +1,11 @@
+// components/NewProductCard 
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { supabase } from "@/utils/supabaseClient"; // Ensure this path is correct
-// import { ColorSelector } from "./ColorSelector"; // REMOVED: No longer directly used for rendering swatches
-
-// Import the CSS Module
-import styles from './NewProductCard.module.css';
+import { supabase } from "@/utils/supabaseClient";
+import { ColorSelector } from "./ColorSelector";
 
 interface ProductVariant {
   id: string;
@@ -84,8 +82,9 @@ const NewProductCard: React.FC<NewProductCardProps> = ({ productId }) => {
     }
   }, [productId]);
 
-  const handleColorSelect = (colorHex: string) => { // Modified: Takes only the hex directly for simplicity of manual swatches
-    const matchedVariant = variants.find((v) => v.color.hex === colorHex);
+  const handleColorSelect = (selectedColors: { name: string; hex: string }[]) => {
+    const selectedHex = selectedColors[0].hex;
+    const matchedVariant = variants.find((v) => v.color.hex === selectedHex);
     if (matchedVariant) {
       setSelectedVariant(matchedVariant);
       setImageSrc(matchedVariant.imageUrl);
@@ -100,39 +99,92 @@ const NewProductCard: React.FC<NewProductCardProps> = ({ productId }) => {
 
   if (!product || !selectedVariant || !imageSrc) return null;
 
-  // REMOVED: 'availableColorHexes' as it's no longer used after removing ColorSelector from rendering.
-  // const availableColorHexes = variants.map(v => v.color.hex);
-
   return (
-    <div className={styles.productCard} onClick={handleClick}>
-      <div className={styles.imageContainer}>
+    <div className="new-product-card" onClick={handleClick}>
+      <div className="image-section">
         <Image
           src={imageSrc}
           alt={product.name}
           width={400}
-          height={600}
-          layout="responsive"
-          objectFit="cover"
-          className={styles.productImage}
+          height={400}
+          className="product-image"
+          style={{ objectFit: "cover", width: "100%", height: "100%" }}
           onError={() => setImageSrc("/assets/placeholder.jpg")}
         />
       </div>
-
-      <div className={styles.infoSection} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.colorSwatches}>
-          {variants.map((variant) => (
-            <div
-              key={variant.id}
-              className={`${styles.colorSwatch} ${selectedVariant.id === variant.id ? styles.selectedSwatch : ''}`}
-              style={{ backgroundColor: variant.color.hex }}
-              // Changed handler to directly pass hex string, aligning with manual swatch clicks
-              onClick={() => handleColorSelect(variant.color.hex)}
-            ></div>
-          ))}
+      <div className="description-section" onClick={(e) => e.stopPropagation()}>
+        <div className="color-variants">
+          <ColorSelector
+            selectedColors={[selectedVariant.color]}
+            onSelect={handleColorSelect}
+            availableColors={variants.map((v) => v.color)}
+            multiple={false}
+          />
         </div>
-        <h3 className={styles.productTitle}>{product.name}</h3>
-        <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
+        <div className="product-text">
+          <h3 className="product-name">{product.name}</h3>
+          <p className="product-price">${product.price.toFixed(2)}</p>
+        </div>
       </div>
+
+      <style>{`
+        .new-product-card {
+          width: 100%;
+          cursor: pointer;
+          overflow: hidden;
+          background-color: rgba(30, 30, 30, 0);
+          position: relative;
+          font-family: Arial, sans-serif;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-section {
+          height: 78%;
+          background-color: #f3f3f3;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .product-image {
+          border-radius: 0;
+        }
+
+        .description-section {
+          height: 22%;
+          backdrop-filter: blur(6px);
+          background-color: rgba(255, 255, 255, 0.4);
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 12px;
+          gap: 10px;
+        }
+
+        .color-variants {
+          display: flex;
+          gap: 20px;
+        }
+
+        .product-text {
+          text-align: left;
+        }
+
+        .product-name {
+          font-size: 16px;
+          font-weight: 500;
+          color: #000;
+          margin: 0;
+        }
+
+        .product-price {
+          font-size: 20px;
+          font-weight: 700;
+          color: #000;
+          margin: 4px 0 0;
+        }
+      `}</style>
     </div>
   );
 };

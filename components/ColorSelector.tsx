@@ -77,7 +77,7 @@ export const ColorSelector: React.FC<ColorSelectorProps> = ({
             onClick={() => handleClick(color)}
             disabled={isDisabled(color)}
             className={clsx(
-              'w-8 h-8 rounded-full border-2 transition-all duration-200 flex items-center justify-center',
+              'w-[1.375rem] h-[1.375rem] rounded-full border-2 transition-all duration-200 flex items-center justify-center',
               isSelected(color)
                 ? 'ring-1 ring-offset-1 ring-gray-900'
                 : 'hover:scale-105',

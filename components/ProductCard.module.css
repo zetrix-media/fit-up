@@ -1,0 +1,84 @@
+/*
+  Font Setup (Add this to your global CSS or _app.tsx)
+  If you're using `@next/font/google`, you can configure it like this:
+
+  // In _app.tsx or your layout component:
+  import { Montserrat } from 'next/font/google';
+
+  const montserrat = Montserrat({
+    subsets: ['latin'],
+    weight: ['400', '600', '700'], // Include semibold (600)
+    variable: '--font-montserrat',
+  });
+
+  // Then in your body tag or root element:
+  // <body className={montserrat.variable}>
+
+  // And in your CSS:
+  // font-family: var(--font-montserrat), sans-serif;
+*/
+
+.productCard {
+  width: 300px; /* Adjust as needed for your layout */
+  background-color: #fff;
+  border-radius: 8px; /* Slight border-radius if desired, not clearly visible in image */
+  overflow: hidden; /* Ensures image corners are rounded if parent has border-radius */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align text and swatches to the left */
+  padding-bottom: 20px; /* Padding at the bottom for content */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Optional: add a subtle shadow for definition */
+}
+
+.imageContainer {
+  width: 100%;
+  height: auto; /* Image component will manage height based on aspect ratio and width */
+}
+
+.imageContainer img {
+  border-bottom-left-radius: 0; /* No border-radius on image bottom corners if card has it */
+  border-bottom-right-radius: 0;
+}
+
+.colorSwatches {
+  display: flex;
+  gap: 10px; /* Space between color swatches */
+  margin-top: 20px;
+  margin-left: 20px; /* Align with text */
+}
+
+.colorSwatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%; /* Makes them circular */
+  border: 1px solid #eee; /* Optional: subtle border for visibility */
+  cursor: pointer; /* Indicates interactivity */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+}
+
+.productTitle {
+  font-family: var(--font-montserrat, 'Montserrat'), sans-serif; /* Use CSS variable for font, with fallback */
+  font-weight: 600; /* Semibold */
+  font-size: 20px;
+  color: #333; /* Darker color for text */
+  margin-top: 15px; /* Space above title */
+  margin-left: 20px; /* Align with swatches */
+  margin-bottom: 5px; /* Space below title */
+  line-height: 1.2; /* Adjust line height for better typography */
+}
+
+.productPrice {
+  font-family: var(--font-montserrat, 'Montserrat'), sans-serif; /* Use CSS variable for font, with fallback */
+  font-weight: 600; /* Semibold */
+  font-size: 26px;
+  color: #333; /* Darker color for price */
+  margin-left: 20px; /* Align with other content */
+}
+
+/* You might want to add media queries for responsiveness */
+@media (max-width: 768px) {
+  .productCard {
+    width: 90%; /* Make card wider on smaller screens */
+    margin: 0 auto; /* Center the card */
+  }
+}

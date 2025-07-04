@@ -1,0 +1,112 @@
+/*
+  Remember to ensure Montserrat font is configured in app/layout.tsx
+  using @next/font/google and applied to the body with its CSS variable.
+*/
+
+.productCard {
+  width: auto; /* Base width as per previous design */
+  background-color: #fff;
+  /* border-radius: 8px; Subtle rounded corners for the card */
+  overflow: hidden; /* Ensures image and content stay within rounded corners */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align content to the left */
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); Soft shadow for depth */
+  cursor: pointer; /* Indicate clickable behavior */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.productCard:hover {
+  transform: translateY(-3px); /* Slight lift on hover */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12); /* Enhanced shadow on hover */
+  border-radius: 0 0 8px 8px; /* Only bottom left and right corners rounded */
+}
+
+.imageContainer {
+  width: 100%;
+  /* Max height for the image section, allowing it to take more space */
+  max-height: 600px; /* Adjust as needed, based on typical image aspect ratio */
+  overflow: hidden; /* Ensure image doesn't spill if it exceeds bounds */
+}
+
+.productImage {
+  /* No specific styling here beyond what next/image handles like objectFit */
+  /* If you need border-radius on the top of the image, you'd apply it here */
+  /* border-top-left-radius: 8px; */
+  /* border-top-right-radius: 8px; */
+}
+
+.infoSection {
+  padding: 15px 0px 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  transition: padding 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition for padding */
+}
+
+.productCard:hover .infoSection {
+  padding: 15px 20px 20px;
+}
+
+.colorSwatches {
+  display: flex;
+  gap: 8px; /* Space between individual color swatches */
+  margin-bottom: 5px; /* Space between swatches and product title */
+  padding-left: 2px;
+}
+
+.colorSwatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%; /* Make them circular */
+  border: 1px solid #eee; /* Subtle border for lighter colors */
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Soft inner shadow */
+  transition: transform 0.1s ease-in-out, border-color 0.1s ease-in-out;
+}
+
+.colorSwatch:hover {
+  transform: scale(1.1); /* Slightly enlarge on hover */
+}
+
+.colorSwatch.selectedSwatch {
+  border: 2px solid #333; /* More prominent border for the selected swatch */
+  box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.3); /* Ring around selected swatch */
+}
+
+.productTitle {
+  font-family: var(--font-montserrat, 'Arial'), sans-serif; /* Use Montserrat variable */
+  font-weight: 600; /* Semibold */
+  font-size: 20px;
+  color: #333; /* Dark color */
+  margin: 0; /* Reset default margins */
+  line-height: 1.2; /* Better line spacing */
+  text-align: left; /* Ensure text aligns left */
+}
+
+.productPrice {
+  font-family: var(--font-montserrat, 'Arial'), sans-serif; /* Use Montserrat variable */
+  font-weight: 600; /* Semibold */
+  font-size: 26px;
+  color: #333; /* Dark color */
+  margin: 0; /* Reset default margins */
+  line-height: 1; /* Tighter line spacing for price */
+  text-align: left; /* Ensure text aligns left */
+}
+
+/* Optional: Add responsiveness */
+@media (max-width: 768px) {
+  .productCard {
+    width: 90%; /* Make card wider on smaller screens */
+    margin: 0 auto; /* Center the card */
+  }
+}
+
+@media (max-width: 480px) {
+  .productCard {
+    width: 100%; /* Full width on very small screens */
+    border-radius: 0; /* No border-radius on mobile for full-width cards */
+  }
+}
