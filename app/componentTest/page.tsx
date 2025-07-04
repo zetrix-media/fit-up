@@ -1,26 +1,20 @@
-import ProductCard from '@/components/ProductCard';
+// pages/index.jsx
+import HeroSlider from '@/components/HeroSection';
 import Head from 'next/head';
 
-const HomePage: React.FC = () => {
-  const productData = {
-    imageUrl: '/assets/product_image.png', // This is the image you specified
-    productTitle: 'Everybody Classic V',
-    price: '35.99',
-    colors: ['#000000', '#E5734E', '#FFB7D6', '#5C8C4C', '#6A9BE8', '#42429F', '#2C3A5A'], // Example colors from the image
-  };
-
+export default function Home() {
   return (
     <div>
       <Head>
-        <title>Product Page</title>
+        <title>Medical Uniforms</title>
+        <meta name="description" content="Premium Medical Uniforms for Everyday Heroes" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f0f0f0' }}>
-        <ProductCard {...productData} />
+      <main>
+        <HeroSlider />
+        {/* Other content for your page */}
       </main>
     </div>
   );
-};
-
-export default HomePage;
+}

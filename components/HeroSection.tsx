@@ -1,213 +1,309 @@
-// components/HeroSection.tsx
-"use client";
+// components/HeroSlider.jsx
+'use client'; // This line marks the component as a Client Component
 
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import classNames from "classnames";
+import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, A11y, Autoplay } from 'swiper/modules';
+import Image from 'next/image';
 
-type Slide = {
-  id: number;
-  bg: string;
-  title: string;
-  subtitle: string;
-  imageUrl: string;
-  button: {
-    label: string;
-    url: string;
-    className?: string;
-  };
-};
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
 
-const slides: Slide[] = [
+const heroImages = [
   {
-    id: 1,
-    bg: "radial-gradient(ellipse at -20% 115%, #A9E8F2 0%, #FAFEFF 100%)",
-    title: "Comfort Meets Care",
-    subtitle: "Premium Medical Uniforms for Everyday Heroes",
-    imageUrl: "/assets/heroImg1.png",
-    button: {
-      label: "Shop Now",
-      url: "/shop",
-      className: "bg-black text-white",
-    },
+    src: '/assets/heroImg1.png', // This image should be the one with white/blue scrubs
+    alt: 'Medical professional in white and light blue scrubs',
+    title: 'Style in Every Stitch',
+    description: 'Modern fits, vibrant colors, and durable fabrics – built for the demands of healthcare.',
+    imagePosition: 'right',
   },
   {
-    id: 2,
-    bg: "radial-gradient(ellipse at -20% 115%, #A9E8F2 0%, #FAFEFF 100%)",
-    title: "Style in Every Stitch",
-    subtitle:
-      "Modern fits, vibrant colors, and durable fabrics – built for the demands of healthcare.",
-    imageUrl: "/assets/heroImg2.png",
-    button: {
-      label: "Explore Collection",
-      url: "/collection",
-      className: "bg-white text-black border border-black",
-    },
+    src: '/assets/heroImg2.png', // This image should be the one with red/blue scrubs (from your latest example)
+    alt: 'Two medical professionals in red and blue scrubs',
+    title: 'Comfort Meets Care',
+    description: 'Premium Medical Uniforms for Everyday Heroes',
+    imagePosition: 'right',
   },
   {
-    id: 3,
-    bg: "radial-gradient(ellipse at -20% 115%, #A9E8F2 0%, #FAFEFF 100%)",
-    title: "Gear Up with Confidence",
-    subtitle:
-      "From hospitals to home care, our uniforms deliver performance, comfort, and confidence.",
-    imageUrl: "/assets/heroImg3.png",
-    button: {
-      label: "Browse Styles",
-      url: "/styles",
-      className: "bg-black text-white",
-    },
+    src: '/assets/heroImg3.png', // This image should be the one with light blue scrubs and mask
+    alt: 'Medical professional in light blue scrubs and mask',
+    title: 'Gear Up with Confidence',
+    description: 'From hospitals to home care, our uniforms deliver performance, comfort, and confidence.',
+    imagePosition: 'right',
   },
 ];
 
-const HeroSection = () => {
-  const [current, setCurrent] = useState(0);
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const goToSlide = (index: number) => {
-    if (index >= 0 && index < slides.length) {
-      setCurrent(index);
-    }
-  };
-
-  const goToPrev = () => {
-    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  };
-
-  const goToNext = () => {
-    setCurrent((prev) => (prev + 1) % slides.length);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (
-      touchStartX.current !== null &&
-      touchEndX.current !== null &&
-      Math.abs(touchStartX.current - touchEndX.current) > 50
-    ) {
-      if (touchStartX.current > touchEndX.current) {
-        goToNext();
-      } else {
-        goToPrev();
-      }
-    }
-    touchStartX.current = null;
-    touchEndX.current = null;
-  };
-
+const HeroSlider = () => {
   return (
-    <section
-      className="relative overflow-hidden w-full h-[700px]"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Slide Container */}
-      <div
-        className="flex transition-transform duration-700 ease-in-out h-full"
-        style={{
-          width: `${slides.length * 100}vw`,
-          transform: `translateX(-${current * 100}vw)`,
+    <div className="hero-slider-wrapper">
+      <Swiper
+        modules={[Navigation, Pagination, A11y, Autoplay]}
+        spaceBetween={0}
+        slidesPerView={1}
+        navigation
+        pagination={{ clickable: true }}
+        loop={true}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
         }}
+        className="mySwiper"
       >
-        {slides.map((slide) => (
-          <div
-            key={slide.id}
-            className="w-screen flex items-center justify-center"
-            style={{
-              background: slide.bg,
-              height: "700px",
-            }}
-          >
-            <div className="container mx-auto px-4 flex flex-col-reverse lg:flex-row items-center justify-between w-full h-full">
-              {/* Text Section */}
-              <div className="w-full lg:w-3/5 flex flex-col justify-center text-center lg:text-left order-2 lg:order-1 pt-10 lg:pt-0">
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-[#000000] leading-tight mb-4 order-1">
-                  {slide.title}
-                </h1>
-                <p className="text-[#585858] text-lg mb-4 order-2">
-                  {slide.subtitle}
-                </p>
-                <div className="order-3">
-                  <a
-                    href={slide.button.url}
-                    className={classNames(
-                      "inline-block px-8 py-3 font-semibold rounded-md text-sm sm:text-base transition-all duration-300",
-                      slide.button.className
-                    )}
-                  >
-                    {slide.button.label}
-                  </a>
-                </div>
+        {heroImages.map((slide, index) => (
+          <SwiperSlide key={index}>
+            <div className="hero-slide-content">
+              {/* Text Content */}
+              <div className="hero-text-container">
+                <h1 className="hero-title">{slide.title}</h1>
+                <p className="hero-description">{slide.description}</p>
+                <button className="shop-now-button">SHOP NOW</button>
               </div>
 
-              {/* Image Section */}
-              <div className="w-full lg:w-2/5 flex justify-center lg:justify-end items-stretch h-full order-1 lg:order-2">
-                <div className="relative w-full h-full image-wrapper">
-                  <Image
-                    src={slide.imageUrl}
-                    alt={slide.title}
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: "bottom" }}
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    priority
-                  />
-                </div>
+              {/* Image Container */}
+              <div className={`hero-image-container image-${slide.imagePosition}`}>
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  width={600} // Keep fixed width for consistency
+                  height={600} // Keep fixed height for consistency
+                  objectFit="contain"
+                  quality={90}
+                />
               </div>
             </div>
-          </div>
+          </SwiperSlide>
         ))}
-      </div>
+      </Swiper>
 
-      {/* Navigation Arrows */}
-      <button
-        onClick={goToPrev}
-        className="absolute top-1/2 left-4 transform -translate-y-1/2 border-2 border-black rounded-full w-10 h-10 flex items-center justify-center text-black hover:bg-black hover:text-white transition-colors duration-300 z-10"
-        aria-label="Previous Slide"
-      >
-        ‹
-      </button>
-      <button
-        onClick={goToNext}
-        className="absolute top-1/2 right-4 transform -translate-y-1/2 border-2 border-black rounded-full w-10 h-10 flex items-center justify-center text-black hover:bg-black hover:text-white transition-colors duration-300 z-10"
-        aria-label="Next Slide"
-      >
-        ›
-      </button>
+      <style jsx global>{`
+        /* --- General Layout and Background Gradient --- */
+        .hero-slider-wrapper {
+          width: 100%;
+          height: 70vh; /* Adjust overall height */
+          position: relative;
+          overflow: hidden;
+          background: linear-gradient(to right, #e0f2f7, #c6e7f1); /* Your desired gradient */
+          display: flex;
+          align-items: center;
+        }
 
-      {/* Dots Navigation */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goToSlide(i)}
-            className={classNames(
-              "w-4 h-4 rounded-full border border-black transition-all duration-300",
-              {
-                "bg-black": i === current,
-                "bg-transparent hover:bg-black": i !== current,
-              }
-            )}
-          />
-        ))}
-      </div>
-    </section>
+        .mySwiper {
+          width: 100%;
+          height: 100%;
+        }
+
+        /* --- Slide Content Layout (Text and Image) --- */
+        .hero-slide-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          height: 100%;
+          position: relative;
+          /* Increased padding for left and right to pull content inwards */
+          padding: 0 8%; /* Adjust to move both text and image away from corners */
+          box-sizing: border-box;
+        }
+
+        /* --- Text Container --- */
+        .hero-text-container {
+          z-index: 10;
+          color: #212529;
+          max-width: 100%; /* Slightly reduced max-width to give more space on the right */
+          flex-shrink: 0;
+          position: relative;
+          /* Add some left padding to pull it further from the absolute edge if needed */
+          padding-left: 2%; /* Example: Add a slight indent from the overall slide padding */
+        }
+
+        .hero-title {
+          font-size: 4.5em;
+          font-weight: 700;
+          margin-bottom: 20px;
+        }
+
+        .hero-description {
+          font-size: 1.5em;
+          margin-bottom: 30px;
+          line-height: 1.5;
+        }
+
+        .shop-now-button {
+          background-color: #ffffff;
+          color: #212529;
+          border: 1px solid #ced4da;
+          padding: 15px 30px;
+          font-size: 1.2em;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+          border-radius: 5px;
+        }
+
+        .shop-now-button:hover {
+          background-color: #e9ecef;
+          border-color: #adb5bd;
+        }
+
+        /* --- Image Container and Overflow --- */
+        .hero-image-container {
+          position: absolute;
+          height: 100%;
+          display: flex;
+          align-items: flex-end; /* Aligns image to the bottom of its container */
+          justify-content: flex-end; /* Aligns image to the right within its container */
+          z-index: 5;
+          pointer-events: none;
+          /* Adjusted right position to move it slightly left from the absolute edge */
+          right: 8%; /* This will position the container away from the right edge */
+          width: 55%; /* Keep a reasonable width for the image container */
+          /* Adjusted negative margin to control the overflow under the text */
+          margin-right: -5%; /* Less negative margin means less overflow, pull it more to the left */
+        }
+
+        .hero-image-container img {
+          width: 100%;
+          height: auto;
+          max-height: 100%;
+          display: block;
+          object-fit: contain;
+          object-position: bottom right;
+        }
+
+        /* --- Swiper Navigation Button Styles --- */
+        .swiper-button-next,
+        .swiper-button-prev {
+          color: #007bff;
+          background-color: rgba(255, 255, 255, 0.7);
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background-color 0.3s ease;
+          /* Adjusting navigation button positions relative to the slide edge */
+          top: 50%; /* Center vertically */
+          transform: translateY(-50%); /* Fine-tune vertical centering */
+        }
+        .swiper-button-prev {
+            left: 20px; /* Pull left button away from the very edge */
+        }
+        .swiper-button-next {
+            right: 20px; /* Pull right button away from the very edge */
+        }
+
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+          background-color: rgba(255, 255, 255, 1);
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+          font-size: 1.5em !important;
+        }
+
+        /* --- Swiper Pagination Styles --- */
+        .swiper-pagination-bullet {
+          background-color: #ced4da;
+          opacity: 1;
+        }
+
+        .swiper-pagination-bullet-active {
+          background-color: #007bff;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 1024px) {
+          .hero-slide-content {
+            padding: 0 5%; /* Adjust padding for smaller desktops */
+          }
+          .hero-text-container {
+            max-width: 50%;
+            padding-left: 0;
+          }
+          .hero-image-container.image-right {
+            right: 5%;
+            width: 60%;
+            margin-right: -3%; /* Slightly less negative margin */
+          }
+          .hero-title {
+            font-size: 3em;
+          }
+          .hero-description {
+            font-size: 1.3em;
+          }
+          .swiper-button-prev { left: 10px; }
+          .swiper-button-next { right: 10px; }
+        }
+
+        @media (max-width: 768px) {
+          .hero-slider-wrapper {
+            height: 60vh;
+          }
+          .hero-slide-content {
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+          }
+          .hero-text-container {
+            max-width: 90%;
+            margin-bottom: 20px;
+            padding-left: 0; /* Remove specific left padding */
+          }
+          .hero-image-container {
+            position: relative;
+            width: 100%;
+            height: auto;
+            margin-right: 0;
+            right: auto; /* Remove absolute right positioning */
+            align-items: center;
+            justify-content: center;
+          }
+          .hero-image-container img {
+             width: 80%;
+             height: auto;
+             object-position: center;
+          }
+          .hero-title {
+            font-size: 2.5em;
+          }
+          .hero-description {
+            font-size: 1.2em;
+          }
+          .shop-now-button {
+            padding: 10px 20px;
+            font-size: 1em;
+          }
+          /* Hide navigation buttons on smaller screens if they become too intrusive */
+          .swiper-button-next,
+          .swiper-button-prev {
+            display: none;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-slider-wrapper {
+            height: 50vh;
+          }
+          .hero-title {
+            font-size: 2em;
+          }
+          .hero-description {
+            font-size: 1em;
+          }
+          .hero-image-container img {
+             width: 90%;
+          }
+        }
+      `}</style>
+    </div>
   );
 };
 
-export default HeroSection;
+export default HeroSlider;
