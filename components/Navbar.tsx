@@ -1,102 +1,112 @@
-'use client'
+// components/Navbar.tsx
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react'; // Import useState
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  HiOutlineUser,
-  HiOutlineSearch,
-  HiOutlineHeart,
-  HiOutlineShoppingBag,
-  HiOutlineMenu,
-  HiOutlineX
-} from 'react-icons/hi'
+    faSearch,
+    faShoppingBag,
+    faBars, // Hamburger icon (solid style)
+    faTimes // Close icon (solid style)
+} from '@fortawesome/free-solid-svg-icons';
+import {
+    faUser as farUser,
+    faHeart as farHeart
+} from '@fortawesome/free-regular-svg-icons';
 
-const navLinks = [
-  { label: 'Home', href: '/', active: true },
-  { label: 'Men', href: '/men' },
-  { label: 'Women', href: '/women' },
-  { label: 'Best Sellers', href: '/best-sellers' },
-  { label: 'Fitup', href: '/fitup' },
-  { label: 'Brands', href: '/brands' },
-  { label: 'contact us', href: '/contact' },
-]
+import styles from './Navbar.module.css';
 
-export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
+const Navbar = () => {
+    const pathname = usePathname();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  return (
-    <header className="bg-[#1E1F23] text-white">
-      <div className="w-full max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Left: Logo */}
-          <Link href="/">
-            <Image
-              src="/assets/fitup_logo_dark_no_bg.png"
-              alt="Logo"
-              width={120}
-              height={80}
-              className="object-contain h-14 w-auto sm:h-16"
-            />
-          </Link>
+    const navLinks = [
+        { name: 'Home', path: '/' },
+        { name: 'Men', path: '/men' },
+        { name: 'Women', path: '/women' },
+        { name: 'Best Sellers', path: '/best-sellers' },
+        { name: 'Fitup', path: '/fitup' },
+        { name: 'Brands', path: '/brands' },
+        { name: 'Contact Us', path: '/contact-us' },
+    ];
 
-          {/* Center: Nav Links */}
-          <nav className="hidden md:flex space-x-6 text-sm font-semibold items-center">
-            {navLinks.map(({ label, href, active }) => (
-              <Link
-                key={label}
-                href={href}
-                className={`hover:text-yellow-400 transition ${
-                  active ? 'text-yellow-400' : 'text-gray-300'
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
 
-          {/* Right: Icons */}
-          <div className="flex items-center space-x-4 text-2xl">
-            <HiOutlineUser className="cursor-pointer hover:text-yellow-400" />
-            <HiOutlineSearch className="cursor-pointer hover:text-yellow-400" />
-            <HiOutlineHeart className="cursor-pointer hover:text-yellow-400" />
-            <div className="relative">
-              <HiOutlineShoppingBag className="cursor-pointer hover:text-yellow-400" />
-              <span className="absolute -top-2 -right-2 text-xs bg-white text-black rounded-full w-4 h-4 flex items-center justify-center">
-                0
-              </span>
+    // Function to close menu when a link is clicked (optional)
+    const handleNavLinkClick = () => {
+        setIsMobileMenuOpen(false);
+    };
+
+    return (
+        <nav className={styles.navbar}>
+            <Link href="/" className={styles.navbarBrand}>
+                <Image
+                    src="/assets/fitup-logo.png"
+                    alt="IT FIT UP Uniforms Logo"
+                    width={100}
+                    height={60}
+                    priority
+                />
+            </Link>
+
+            <ul className={styles.navbarNav}>
+                {navLinks.map((link) => (
+                    <li
+                        key={link.name}
+                        className={`${styles.navItem} ${pathname === link.path ? styles.navItemActive : ''}`}
+                    >
+                        <Link href={link.path} className={styles.navLink}>
+                            {link.name}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+
+            <div className={styles.navbarIcons}>
+                <Link href="/account" className={styles.iconLink}>
+                    <FontAwesomeIcon icon={farUser} />
+                </Link>
+                <Link href="/search" className={styles.iconLink}>
+                    <FontAwesomeIcon icon={faSearch} />
+                </Link>
+                <Link href="/wishlist" className={styles.iconLink}>
+                    <FontAwesomeIcon icon={farHeart} />
+                </Link>
+                <Link href="/cart" className={`${styles.iconLink} ${styles.cartIcon}`}>
+                    <FontAwesomeIcon icon={faShoppingBag} />
+                    <span className={styles.cartCount}>0</span>
+                </Link>
+
+                {/* Hamburger menu icon */}
+                <div className={styles.hamburgerMenu} onClick={toggleMobileMenu}>
+                    <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} />
+                </div>
             </div>
-            {/* Hamburger */}
-            <div className="md:hidden">
-              <button onClick={() => setMenuOpen(!menuOpen)} className="focus:outline-none">
-                {menuOpen ? <HiOutlineX /> : <HiOutlineMenu />}
-              </button>
-            </div>
-          </div>
-        </div>
 
-        {/* Animated Mobile Menu */}
-        <div
-          className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
-            menuOpen ? 'max-h-[300px] opacity-100 scale-y-100' : 'max-h-0 opacity-0 scale-y-95'
-          } transform origin-top`}
-        >
-          <nav className="flex flex-col space-y-3 text-sm pt-4 pb-4 border-t border-gray-700 px-2">
-            {navLinks.map(({ label, href, active }) => (
-              <Link
-                key={label}
-                href={href}
-                className={`${
-                  active ? 'text-yellow-400' : 'text-gray-300'
-                } hover:text-yellow-400`}
-                onClick={() => setMenuOpen(false)}
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </div>
-    </header>
-  )
-}
+            {/* Mobile Menu Overlay with Transitions */}
+            <div className={`${styles.mobileMenuOverlay} ${isMobileMenuOpen ? styles.mobileMenuOverlayOpen : ''}`}>
+                <div className={styles.mobileMenuCloseIcon} onClick={toggleMobileMenu}>
+                    <FontAwesomeIcon icon={faTimes} />
+                </div>
+                {navLinks.map((link) => (
+                    <Link
+                        key={link.name}
+                        href={link.path}
+                        className={styles.mobileMenuLink}
+                        onClick={handleNavLinkClick} // Close menu on link click
+                    >
+                        {link.name}
+                    </Link>
+                ))}
+            </div>
+        </nav>
+    );
+};
+
+export default Navbar;

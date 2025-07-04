@@ -1,5 +1,5 @@
 // components/HeroSlider.jsx
-'use client'; // This line marks the component as a Client Component
+'use client';
 
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -14,21 +14,21 @@ import 'swiper/css/autoplay';
 
 const heroImages = [
   {
-    src: '/assets/heroImg1.png', // This image should be the one with white/blue scrubs
+    src: '/assets/heroImg1.png',
     alt: 'Medical professional in white and light blue scrubs',
     title: 'Style in Every Stitch',
     description: 'Modern fits, vibrant colors, and durable fabrics – built for the demands of healthcare.',
     imagePosition: 'right',
   },
   {
-    src: '/assets/heroImg2.png', // This image should be the one with red/blue scrubs (from your latest example)
+    src: '/assets/heroImg2.png',
     alt: 'Two medical professionals in red and blue scrubs',
     title: 'Comfort Meets Care',
     description: 'Premium Medical Uniforms for Everyday Heroes',
     imagePosition: 'right',
   },
   {
-    src: '/assets/heroImg3.png', // This image should be the one with light blue scrubs and mask
+    src: '/assets/heroImg3.png',
     alt: 'Medical professional in light blue scrubs and mask',
     title: 'Gear Up with Confidence',
     description: 'From hospitals to home care, our uniforms deliver performance, comfort, and confidence.',
@@ -67,10 +67,14 @@ const HeroSlider = () => {
                 <Image
                   src={slide.src}
                   alt={slide.alt}
-                  width={600} // Keep fixed width for consistency
-                  height={600} // Keep fixed height for consistency
-                  objectFit="contain"
+                  // Removed fixed width/height here; will control via CSS for better responsiveness
+                  // Use fill layout with objectFit for desktop image positioning
+                  layout="fill"
+                  objectFit="contain" // Ensures image fits within bounds
+                  objectPosition="bottom right" // Sticks to bottom and right
                   quality={90}
+                  // Responsive sizing for image within its container (Next.js optimizes based on this)
+                  sizes="(max-width: 768px) 80vw, (max-width: 1024px) 60vw, 55vw"
                 />
               </div>
             </div>
@@ -82,10 +86,10 @@ const HeroSlider = () => {
         /* --- General Layout and Background Gradient --- */
         .hero-slider-wrapper {
           width: 100%;
-          height: 70vh; /* Adjust overall height */
+          height: 70vh; /* Fixed height for desktop */
           position: relative;
           overflow: hidden;
-          background: linear-gradient(to right, #e0f2f7, #c6e7f1); /* Your desired gradient */
+          background: linear-gradient(to right, #e0f2f7, #c6e7f1);
           display: flex;
           align-items: center;
         }
@@ -98,13 +102,12 @@ const HeroSlider = () => {
         /* --- Slide Content Layout (Text and Image) --- */
         .hero-slide-content {
           display: flex;
-          align-items: center;
+          align-items: center; /* Vertically centers content within this flex container */
           justify-content: space-between;
           width: 100%;
-          height: 100%;
-          position: relative;
-          /* Increased padding for left and right to pull content inwards */
-          padding: 0 8%; /* Adjust to move both text and image away from corners */
+          height: 100%; /* Important: Takes full height of swiper-slide */
+          position: relative; /* For absolute positioning of image */
+          padding: 0 8%;
           box-sizing: border-box;
         }
 
@@ -112,15 +115,14 @@ const HeroSlider = () => {
         .hero-text-container {
           z-index: 10;
           color: #212529;
-          max-width: 100%; /* Slightly reduced max-width to give more space on the right */
+          max-width: 70%; /* Adjusted for desktop layout */
           flex-shrink: 0;
           position: relative;
-          /* Add some left padding to pull it further from the absolute edge if needed */
-          padding-left: 2%; /* Example: Add a slight indent from the overall slide padding */
+          padding-left: 2%; /* Fine-tuning text position */
         }
 
         .hero-title {
-          font-size: 4.5em;
+          font-size: 3.5em;
           font-weight: 700;
           margin-bottom: 20px;
         }
@@ -148,29 +150,22 @@ const HeroSlider = () => {
           border-color: #adb5bd;
         }
 
-        /* --- Image Container and Overflow --- */
+        /* --- Image Container (Desktop) --- */
         .hero-image-container {
-          position: absolute;
-          height: 100%;
-          display: flex;
-          align-items: flex-end; /* Aligns image to the bottom of its container */
-          justify-content: flex-end; /* Aligns image to the right within its container */
+          position: absolute; /* Absolute positioning for desktop */
+          bottom: 0; /* Stick to bottom */
+          right: 8%; /* Adjust from right edge */
+          width: 55%; /* Control width */
+          height: 100%; /* Allows image to take full vertical space to align to bottom */
           z-index: 5;
           pointer-events: none;
-          /* Adjusted right position to move it slightly left from the absolute edge */
-          right: 8%; /* This will position the container away from the right edge */
-          width: 55%; /* Keep a reasonable width for the image container */
-          /* Adjusted negative margin to control the overflow under the text */
-          margin-right: -5%; /* Less negative margin means less overflow, pull it more to the left */
+          margin-right: -5%; /* Overflow effect */
         }
 
+        /* Next.js Image with layout="fill" inside .hero-image-container */
         .hero-image-container img {
-          width: 100%;
-          height: auto;
-          max-height: 100%;
-          display: block;
-          object-fit: contain;
-          object-position: bottom right;
+          /* No direct width/height needed here as layout="fill" takes over */
+          /* object-fit and object-position are passed directly to Image component */
         }
 
         /* --- Swiper Navigation Button Styles --- */
@@ -185,17 +180,15 @@ const HeroSlider = () => {
           align-items: center;
           justify-content: center;
           transition: background-color 0.3s ease;
-          /* Adjusting navigation button positions relative to the slide edge */
-          top: 50%; /* Center vertically */
-          transform: translateY(-50%); /* Fine-tune vertical centering */
+          top: 50%;
+          transform: translateY(-50%);
         }
         .swiper-button-prev {
-            left: 20px; /* Pull left button away from the very edge */
+            left: 20px;
         }
         .swiper-button-next {
-            right: 20px; /* Pull right button away from the very edge */
+            right: 20px;
         }
-
 
         .swiper-button-next:hover,
         .swiper-button-prev:hover {
@@ -220,16 +213,16 @@ const HeroSlider = () => {
         /* --- Responsive Adjustments --- */
         @media (max-width: 1024px) {
           .hero-slide-content {
-            padding: 0 5%; /* Adjust padding for smaller desktops */
+            padding: 0 5%;
           }
           .hero-text-container {
             max-width: 50%;
             padding-left: 0;
           }
-          .hero-image-container.image-right {
+          .hero-image-container { /* Updated for 1024px */
             right: 5%;
             width: 60%;
-            margin-right: -3%; /* Slightly less negative margin */
+            margin-right: -3%;
           }
           .hero-title {
             font-size: 3em;
@@ -243,44 +236,73 @@ const HeroSlider = () => {
 
         @media (max-width: 768px) {
           .hero-slider-wrapper {
-            height: 60vh;
+            height: auto; /* Allow height to be determined by content on mobile */
+            min-height: 50vh; /* Ensure a minimum height */
           }
-          .hero-slide-content {
+          .mySwiper {
+            height: auto; /* Allow Swiper to adapt height to current slide */
+            min-height: 50vh; /* Match wrapper's min-height */
+          }
+          .swiper-slide {
+            height: auto; /* Allow individual slides to have dynamic height */
+            min-height: 50vh; /* Ensures content has enough room */
+            display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
+            justify-content: space-between; /* Pushes text to top, image to bottom */
+            align-items: center; /* Centers horizontally */
+            padding: 30px 20px 20px; /* Consistent top padding, adjust bottom as needed */
+            box-sizing: border-box;
           }
+
+          .hero-slide-content {
+            /* On mobile, this div is no longer the flex parent, so we revert its display. */
+            /* It acts as a logical grouping for text+image within the slide. */
+            display: contents; /* Allows children to become direct flex items of swiper-slide */
+          }
+
           .hero-text-container {
             max-width: 90%;
             margin-bottom: 20px;
-            padding-left: 0; /* Remove specific left padding */
-          }
-          .hero-image-container {
-            position: relative;
-            width: 100%;
-            height: auto;
-            margin-right: 0;
-            right: auto; /* Remove absolute right positioning */
-            align-items: center;
-            justify-content: center;
-          }
-          .hero-image-container img {
-             width: 80%;
-             height: auto;
-             object-position: center;
+            padding-left: 0;
+            flex-shrink: 0;
+            text-align: center;
           }
           .hero-title {
             font-size: 2.5em;
+            line-height: 1.2;
+            margin-bottom: 10px;
           }
           .hero-description {
             font-size: 1.2em;
+            margin-bottom: 20px;
           }
           .shop-now-button {
             padding: 10px 20px;
             font-size: 1em;
           }
-          /* Hide navigation buttons on smaller screens if they become too intrusive */
+
+          .hero-image-container {
+            position: relative; /* Switch to relative for mobile layout */
+            width: 100%; /* Take full available width */
+            height: auto; /* Height determined by content */
+            margin-right: 0;
+            right: auto; /* Remove absolute positioning property */
+            flex-grow: 1; /* Allows image container to take remaining space */
+            display: flex; /* Makes this a flex container for the Image */
+            align-items: flex-end; /* Aligns image to the bottom within this container */
+            justify-content: center; /* Centers image horizontally within this container */
+            padding-bottom: 0; /* Ensure no extra padding at the bottom */
+          }
+
+          /* For Next.js Image with layout="fill" on mobile */
+          .hero-image-container img {
+             position: relative !important; /* Override layout="fill" absolute positioning for mobile */
+             width: 80% !important; /* Smaller image on mobile */
+             height: auto !important; /* Allow proportional scaling */
+             object-fit: contain !important;
+             object-position: bottom center !important; /* Stick to bottom, center horizontally */
+          }
+
           .swiper-button-next,
           .swiper-button-prev {
             display: none;
@@ -289,16 +311,25 @@ const HeroSlider = () => {
 
         @media (max-width: 480px) {
           .hero-slider-wrapper {
-            height: 50vh;
+            min-height: 40vh;
+          }
+          .mySwiper {
+            min-height: 40vh;
+          }
+          .swiper-slide {
+            min-height: 40vh;
+            padding: 20px 15px 15px;
           }
           .hero-title {
             font-size: 2em;
+            margin-bottom: 8px;
           }
           .hero-description {
-            font-size: 1em;
+            font-size: 0.9em;
+            margin-bottom: 15px;
           }
           .hero-image-container img {
-             width: 90%;
+             width: 90% !important; /* Adjust image size for very small screens */
           }
         }
       `}</style>
