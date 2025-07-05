@@ -1,4 +1,3 @@
-// components/CategoryTabs.tsx
 'use client';
 
 import React from 'react';
@@ -21,7 +20,7 @@ export default function CategoryTabs({
 }: CategoryTabsProps) {
   return (
     <div className="flex justify-center mt-6">
-      <div className="flex gap-6 bg-[#F9F9FB] rounded-full px-4 py-3 shadow-sm">
+      <div className="flex gap-6 bg-[#F9F9FB] rounded-full px-4 py-3 shadow-sm overflow-x-auto">
         {categories.map((cat) => (
           <button
             key={cat.categoryid}
