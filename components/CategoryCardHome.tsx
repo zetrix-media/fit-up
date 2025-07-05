@@ -1,16 +1,30 @@
 // components/CategoryCardHome
 "use client";
 
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 type CategoryCardHomeProps = {
+  id: string | number;
   imageUrl: string;
   name: string;
 };
 
-const CategoryCardHome = ({ imageUrl, name }: CategoryCardHomeProps) => {
+const CategoryCardHome = ({ id, imageUrl, name }: CategoryCardHomeProps) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/shop?category=${id}`);
+  };
+
   return (
-    <div className="bg-[#E3F1F5] px-6 py-6 flex flex-col items-center justify-between rounded-md shadow-md w-full min-h-[240px] md:min-h-[260px]">
+    <div
+      className="bg-[#E3F1F5] px-6 py-6 flex flex-col items-center justify-between rounded-md shadow-md w-full min-h-[240px] md:min-h-[260px] cursor-pointer"
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") handleClick(); }}
+    >
       <div className="relative w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32">
         <Image
           src={imageUrl}

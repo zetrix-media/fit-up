@@ -38,6 +38,7 @@ const ShopByCategories = () => {
         {categories.map((category) => (
           <div key={category.categoryid} className="w-full h-full">
             <CategoryCardHome
+              id={category.categoryid}
               imageUrl={category.categoryimage}
               name={category.categoryname}
             />
