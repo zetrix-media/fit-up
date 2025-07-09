@@ -2,8 +2,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Montserrat } from "next/font/google"; 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+// import Navbar from "@/components/Navbar";
+// import Footer from "@/components/Footer";
 import "./globals.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -48,9 +48,9 @@ export default function RootLayout({
           h-screen flex flex-col
         `}
       >
-        <Navbar />
+        {/* <Navbar /> */}
         {children}
-        <Footer />
+        {/* <Footer /> */}
         <SpeedInsights />
       </body>
     </html>

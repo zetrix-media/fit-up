@@ -36,7 +36,7 @@
 /* Set responsive heights on the image itself */
 .productImage {
   width: 100%;
-  height: 600px !important;      /* Desktop default */
+  height: 600px;      /* Desktop default */
   object-fit: cover;
   border-radius: 10px;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
