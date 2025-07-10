@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react'; // Import useState
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,17 +22,20 @@ import styles from './Navbar.module.css';
 
 const Navbar = () => {
     const pathname = usePathname();
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const searchParams = useSearchParams();
+    const gender = searchParams.get('gender');
 
     const navLinks = [
         { name: 'Home', path: '/' },
-        { name: 'Men', path: '/shop?gender=men' },
-        { name: 'Women', path: '/shop?gender=women' },
+        { name: 'Men', path: '/shop?gender=Men' },
+        { name: 'Women', path: '/shop?gender=Women' },
         { name: 'Best Sellers', path: '/best-sellers' },
         { name: 'Fitup', path: '/fitup' },
         { name: 'Brands', path: '/brands' },
         { name: 'Contact Us', path: '/contact' },
     ];
+
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -56,16 +59,21 @@ const Navbar = () => {
             </Link>
 
             <ul className={styles.navbarNav}>
-                {navLinks.map((link) => (
-                    <li
-                        key={link.name}
-                        className={`${styles.navItem} ${pathname === link.path ? styles.navItemActive : ''}`}
-                    >
-                        <Link href={link.path} className={styles.navLink}>
-                            {link.name}
-                        </Link>
-                    </li>
-                ))}
+                {navLinks.map((link) => {
+                    let isActive = pathname === link.path;
+                    if (link.name === 'Men' && gender === 'Men') isActive = true;
+                    if (link.name === 'Women' && gender === 'Women') isActive = true;
+                    return (
+                        <li
+                            key={link.name}
+                            className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+                        >
+                            <Link href={link.path} className={styles.navLink}>
+                                {link.name}
+                            </Link>
+                        </li>
+                    );
+                })}
             </ul>
 
             <div className={styles.navbarIcons}>
@@ -94,16 +102,21 @@ const Navbar = () => {
                 <div className={styles.mobileMenuCloseIcon} onClick={toggleMobileMenu}>
                     <FontAwesomeIcon icon={faTimes} />
                 </div>
-                {navLinks.map((link) => (
-                    <Link
-                        key={link.name}
-                        href={link.path}
-                        className={styles.mobileMenuLink}
-                        onClick={handleNavLinkClick} // Close menu on link click
-                    >
-                        {link.name}
-                    </Link>
-                ))}
+                {navLinks.map((link) => {
+                    let isActive = pathname === link.path;
+                    if (link.name === 'Men' && gender === 'Men') isActive = true;
+                    if (link.name === 'Women' && gender === 'Women') isActive = true;
+                    return (
+                        <Link
+                            key={link.name}
+                            href={link.path}
+                            className={`${styles.mobileMenuLink} ${isActive ? styles.navItemActive : ''}`}
+                            onClick={handleNavLinkClick}
+                        >
+                            {link.name}
+                        </Link>
+                    );
+                })}
             </div>
         </nav>
     );

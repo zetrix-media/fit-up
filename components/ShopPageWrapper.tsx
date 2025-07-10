@@ -26,8 +26,8 @@ export default function ShopPageWrapper() {
 
   // Get query params
   const categoryFromUrl = Number(searchParams.get('category')) || 0;
-  const genderParam = searchParams.get('gender')?.toLowerCase();
-  const gender = genderParam === 'men' || genderParam === 'women' ? genderParam : null;
+  const genderParam = searchParams.get('gender');
+  const gender = genderParam === 'Men' || genderParam === 'Women' ? genderParam : null;
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -75,6 +75,7 @@ export default function ShopPageWrapper() {
       }
 
       const { data, error } = await query;
+      console.log('Fetched products:', data);
 
       if (error) {
         console.error('❌ Supabase fetch error:', error);
@@ -83,7 +84,7 @@ export default function ShopPageWrapper() {
       // Normalize field names and enforce Product type
       const normalized: Product[] = (data ?? []).map((item) => ({
         productid: item.productid,
-        gender: item.Gender?.toLowerCase?.() || '',
+        gender: item.Gender || '',
         categoryid: item.categoryid,
         productvariants: item.productvariants ?? [],
       }));
