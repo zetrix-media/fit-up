@@ -131,7 +131,7 @@ const NewProductCard: React.FC<NewProductCardProps> = ({ productId }) => {
           ))}
         </div>
         <h3 className={styles.productTitle}>{product.name}</h3>
-        <p className={styles.productPrice}>ADE {product.price.toFixed(2)}</p>
+        <p className={styles.productPrice}>AED {product.price.toFixed(2)}</p>
       </div>
     </div>
   );
