@@ -31,7 +31,7 @@ const Navbar = () => {
         { name: 'Best Sellers', path: '/best-sellers' },
         { name: 'Fitup', path: '/fitup' },
         { name: 'Brands', path: '/brands' },
-        { name: 'Contact Us', path: '/contact-us' },
+        { name: 'Contact Us', path: '/contact' },
     ];
 
     const toggleMobileMenu = () => {

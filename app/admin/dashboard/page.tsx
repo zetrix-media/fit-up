@@ -12,7 +12,7 @@ const Dashboard = () => {
         {/* Card: Revenue */}
         <div className="bg-white shadow rounded-lg p-4">
           <h2 className="text-gray-600 font-medium">Total Revenue</h2>
-          <p className="text-2xl font-bold text-gray-800 mt-2">$12,340</p>
+          <p className="text-2xl font-bold text-gray-800 mt-2">ADE 12,340</p>
         </div>
 
         {/* Card: Orders */}
@@ -51,15 +51,15 @@ const Dashboard = () => {
           <ul className="space-y-3">
             <li className="flex justify-between items-center">
               <span>Product A</span>
-              <span className="font-bold text-gray-800">$3,200</span>
+              <span className="font-bold text-gray-800">ADE 3,200</span>
             </li>
             <li className="flex justify-between items-center">
               <span>Product B</span>
-              <span className="font-bold text-gray-800">$2,750</span>
+              <span className="font-bold text-gray-800">ADE 2,750</span>
             </li>
             <li className="flex justify-between items-center">
               <span>Product C</span>
-              <span className="font-bold text-gray-800">$1,980</span>
+              <span className="font-bold text-gray-800">ADE 1,980</span>
             </li>
           </ul>
         </div>
@@ -84,7 +84,7 @@ const Dashboard = () => {
               <td>
                 <span className="text-green-600 font-medium">Completed</span>
               </td>
-              <td>$320.00</td>
+              <td>ADE 320.00</td>
             </tr>
             <tr className="border-b">
               <td className="py-2">#1002</td>
@@ -92,7 +92,7 @@ const Dashboard = () => {
               <td>
                 <span className="text-yellow-600 font-medium">Pending</span>
               </td>
-              <td>$150.00</td>
+              <td>ADE 150.00</td>
             </tr>
             <tr>
               <td className="py-2">#1003</td>
@@ -100,7 +100,7 @@ const Dashboard = () => {
               <td>
                 <span className="text-red-600 font-medium">Cancelled</span>
               </td>
-              <td>$210.00</td>
+              <td>ADE 210.00</td>
             </tr>
           </tbody>
         </table>

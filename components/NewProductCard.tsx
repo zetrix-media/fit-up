@@ -110,8 +110,8 @@ const NewProductCard: React.FC<NewProductCardProps> = ({ productId }) => {
           src={imageSrc}
           alt={product.name}
           width={400}
-          height={600}
-          layout="responsive"
+          height={350}
+          layout="fixed"
           objectFit="cover"
           className={styles.productImage}
           onError={() => setImageSrc("/assets/product_placeholder.webp")} // changed here
@@ -131,7 +131,7 @@ const NewProductCard: React.FC<NewProductCardProps> = ({ productId }) => {
           ))}
         </div>
         <h3 className={styles.productTitle}>{product.name}</h3>
-        <p className={styles.productPrice}>${product.price.toFixed(2)}</p>
+        <p className={styles.productPrice}>ADE {product.price.toFixed(2)}</p>
       </div>
     </div>
   );
