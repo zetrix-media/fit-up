@@ -86,7 +86,7 @@ const HeroSlider = () => {
         /* --- General Layout and Background Gradient --- */
         .hero-slider-wrapper {
           width: 100%;
-          height: 70vh; /* Fixed height for desktop */
+          height: 80vh; /* Fixed height for desktop */
           position: relative;
           overflow: hidden;
           background: linear-gradient(to right, #e0f2f7, #c6e7f1);
