@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
-export default function ContactPage() {
+function ContactContent() {
   const [form, setForm] = useState({
     name: '',
     company: '',
@@ -130,5 +130,13 @@ export default function ContactPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense>
+      <ContactContent />
+    </Suspense>
   )
 }
