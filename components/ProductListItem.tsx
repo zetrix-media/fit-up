@@ -11,104 +11,136 @@ interface ProductListItemProps {
   productId: number;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
-  const [product, setProduct] = useState<{
-    name: string;
-    category: string;
-    price: number;
-    stock: number;
-    imageUrl: string;
-    ordersLast30Days: number;
-  } | null>(null);
+interface ProductData {
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  imageUrl: string;
+  ordersLast30Days: number;
+}
 
+interface OrderDetailWithOrder {
+  quantity: number;
+  orders: {
+    createdat: string;
+  }[];
+}
+
+const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
+  const [product, setProduct] = useState<ProductData | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-  const fetchData = async () => {
-    const { data: prod, error: prodError } = await supabase
-      .from('products')
-      .select(`
-        name,
-        baseprice,
-        stock,
-        categoryid,
-        productid,
-        categories ( categoryname )
-      `)
-      .eq('productid', productId)
-      .single();
+    const fetchData = async () => {
+      // Step 1: Fetch product info
+      const { data: prod, error: prodError } = await supabase
+        .from('products')
+        .select('name, baseprice, stock, productid, categoryid')
+        .eq('productid', productId)
+        .single();
 
-    if (prodError || !prod) {
-      console.error('Product fetch error:', prodError);
-      return;
-    }
+      if (prodError || !prod) {
+        console.error('Product fetch error:', prodError);
+        return;
+      }
 
-    const category = prod.categories?.categoryname || 'Uncategorized';
+      // Step 2: Fetch category name
+      let category = 'Uncategorized';
+      if (prod.categoryid) {
+        const { data: categoryData, error: categoryError } = await supabase
+          .from('categories')
+          .select('categoryname')
+          .eq('categoryid', prod.categoryid)
+          .single();
 
-    const { data: variantData, error: variantError } = await supabase
-      .from('productvariants')
-      .select('mainimageurl, variantid')
-      .eq('productid', productId)
-      .order('variantid', { ascending: true })
-      .limit(1);
+        if (!categoryError && categoryData) {
+          category = categoryData.categoryname;
+        }
+      }
 
-    if (variantError || !variantData || variantData.length === 0) {
-      console.error('Variant fetch error:', variantError);
-      return;
-    }
+      // Step 3: Fetch product variant for image
+      const { data: variantData, error: variantError } = await supabase
+        .from('productvariants')
+        .select('mainimageurl, variantid')
+        .eq('productid', productId)
+        .order('variantid', { ascending: true })
+        .limit(1);
 
-    const variant = variantData[0];
+      if (variantError || !variantData || variantData.length === 0) {
+        console.error('Variant fetch error:', variantError);
+        return;
+      }
 
-    const { data: orderDetailsData, error: orderDetailsError } = await supabase
-      .from('orderdetails')
-      .select(`
-        orderid,
-        quantity,
-        price,
-        orders (
-          createdat
-        )
-      `)
-      .eq('variantid', variant.variantid);
+      const variant = variantData[0];
 
-    if (orderDetailsError || !orderDetailsData) {
-      console.error('Order fetch error:', orderDetailsError);
-      return;
-    }
+      // Step 4: Fetch order details with nested order.createdat
+      const { data, error: orderDetailsError } = await supabase
+        .from('orderdetails')
+        .select(`
+          quantity,
+          orders (
+            createdat
+          )
+        `)
+        .eq('variantid', variant.variantid);
 
-    const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const filteredOrders = orderDetailsData.filter(
-      (o) => new Date(o.orders?.createdat) >= cutoff
-    );
+      if (orderDetailsError) {
+        console.error('Order fetch error:', orderDetailsError);
+        return;
+      }
 
-    const totalSales = filteredOrders.reduce((sum, o) => sum + o.quantity, 0);
+      const orderDetailsData = data as OrderDetailWithOrder[];
+      const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    setProduct({
-      name: prod.name,
-      category,
-      price: Number(prod.baseprice) || 0,
-      stock: prod.stock ?? 0,
-      imageUrl: variant.mainimageurl || '/assets/product_placeholder.webp',
-      ordersLast30Days: totalSales,
-    });
-  };
+      const filteredOrders = orderDetailsData.filter(
+  (o) => new Date(o.orders?.[0]?.createdat) >= cutoff
+);
+      // Calculate total sales in the last 30 days
+      if (filteredOrders.length === 0) {    
+        setProduct({
+          name: prod.name,
+          category,
+          price: Number(prod.baseprice) || 0,
+          stock: prod.stock ?? 0,
+          imageUrl: variant.mainimageurl || '/assets/product_placeholder.webp',
+          ordersLast30Days: 0,
+        });
+        return;
+      }
 
-  fetchData();
-}, [productId]);
+      const totalSales = filteredOrders.reduce((sum, o) => sum + o.quantity, 0);
 
+      // Step 5: Set product state
+      setProduct({
+        name: prod.name,
+        category,
+        price: Number(prod.baseprice) || 0,
+        stock: prod.stock ?? 0,
+        imageUrl: variant.mainimageurl || '/assets/product_placeholder.webp',
+        ordersLast30Days: totalSales,
+      });
+    };
+
+    fetchData();
+  }, [productId]);
 
   const handleEdit = () => router.push(`/edit-product/${productId}`);
+
   const handleRemove = async () => {
-    await supabase.from('products').delete().eq('productid', productId);
-    alert('Product removed');
+    const { error } = await supabase.from('products').delete().eq('productid', productId);
+    if (error) {
+      console.error('Delete failed:', error);
+    } else {
+      alert('Product removed');
+    }
   };
 
   if (!product) return null;
 
   return (
     <tr className="group hover:bg-gray-50 border-b transition text-sm">
-      {/* Product name + image + category */}
       <td className="px-4 py-3 whitespace-nowrap">
         <div className="flex items-center gap-3">
           <Image
@@ -117,6 +149,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
             width={40}
             height={40}
             className="rounded object-cover"
+            style={{ minHeight: '50px', minWidth: '50px' }}
           />
           <div>
             <div className="font-medium text-gray-800">{product.name}</div>
@@ -125,22 +158,18 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
         </div>
       </td>
 
-      {/* Price */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
-  AED {Number(product.price ?? 0).toFixed(2)}
-</td>
+        AED {product.price.toFixed(2)}
+      </td>
 
-      {/* Stock */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
         {product.stock} units
       </td>
 
-      {/* Orders in last 30 days */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
         {product.ordersLast30Days} orders
       </td>
 
-      {/* Menu */}
       <td className="px-4 py-3 pr-6 text-right relative">
         <button
           className="p-2 hover:bg-gray-100 rounded-full"

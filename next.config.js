@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   images: {
+    domains: ['czazkicksdbdoupuavhi.supabase.co/', 'flagcdn.com'],
     remotePatterns: [
       {
         protocol: 'https',
