@@ -34,7 +34,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Step 1: Fetch product info
+      // 1. Product info
       const { data: prod, error: prodError } = await supabase
         .from('products')
         .select('name, baseprice, stock, productid, categoryid')
@@ -46,7 +46,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
         return;
       }
 
-      // Step 2: Fetch category name
+      // 2. Category name
       let category = 'Uncategorized';
       if (prod.categoryid) {
         const { data: categoryData, error: categoryError } = await supabase
@@ -55,12 +55,12 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
           .eq('categoryid', prod.categoryid)
           .single();
 
-        if (!categoryError && categoryData) {
+        if (!categoryError && categoryData?.categoryname) {
           category = categoryData.categoryname;
         }
       }
 
-      // Step 3: Fetch product variant for image
+      // 3. Product variant for image
       const { data: variantData, error: variantError } = await supabase
         .from('productvariants')
         .select('mainimageurl, variantid')
@@ -68,57 +68,39 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
         .order('variantid', { ascending: true })
         .limit(1);
 
-      if (variantError || !variantData || variantData.length === 0) {
-        console.error('Variant fetch error:', variantError);
-        return;
+      let imageUrl = '/assets/product_placeholder.webp';
+      let variantId: number | null = null;
+
+      if (!variantError && Array.isArray(variantData) && variantData.length > 0) {
+        imageUrl = variantData[0].mainimageurl || imageUrl;
+        variantId = variantData[0].variantid;
       }
 
-      const variant = variantData[0];
+      // 4. Orders in last 30 days
+      let totalSales = 0;
+      if (variantId !== null) {
+        const { data: orderData, error: orderError } = await supabase
+          .from('orderdetails')
+          .select('quantity, orders ( createdat )')
+          .eq('variantid', variantId);
 
-      // Step 4: Fetch order details with nested order.createdat
-      const { data, error: orderDetailsError } = await supabase
-        .from('orderdetails')
-        .select(`
-          quantity,
-          orders (
-            createdat
-          )
-        `)
-        .eq('variantid', variant.variantid);
-
-      if (orderDetailsError) {
-        console.error('Order fetch error:', orderDetailsError);
-        return;
+        if (!orderError && Array.isArray(orderData)) {
+          const orderDetails = orderData as OrderDetailWithOrder[];
+          const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          const filteredOrders = orderDetails.filter(
+            (o) => new Date(o.orders?.[0]?.createdat) >= cutoff
+          );
+          totalSales = filteredOrders.reduce((sum, o) => sum + o.quantity, 0);
+        }
       }
 
-      const orderDetailsData = data as OrderDetailWithOrder[];
-      const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-
-      const filteredOrders = orderDetailsData.filter(
-  (o) => new Date(o.orders?.[0]?.createdat) >= cutoff
-);
-      // Calculate total sales in the last 30 days
-      if (filteredOrders.length === 0) {    
-        setProduct({
-          name: prod.name,
-          category,
-          price: Number(prod.baseprice) || 0,
-          stock: prod.stock ?? 0,
-          imageUrl: variant.mainimageurl || '/assets/product_placeholder.webp',
-          ordersLast30Days: 0,
-        });
-        return;
-      }
-
-      const totalSales = filteredOrders.reduce((sum, o) => sum + o.quantity, 0);
-
-      // Step 5: Set product state
+      // 5. Set product
       setProduct({
         name: prod.name,
         category,
         price: Number(prod.baseprice) || 0,
         stock: prod.stock ?? 0,
-        imageUrl: variant.mainimageurl || '/assets/product_placeholder.webp',
+        imageUrl,
         ordersLast30Days: totalSales,
       });
     };
@@ -130,17 +112,15 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
 
   const handleRemove = async () => {
     const { error } = await supabase.from('products').delete().eq('productid', productId);
-    if (error) {
-      console.error('Delete failed:', error);
-    } else {
-      alert('Product removed');
-    }
+    if (error) console.error('Delete failed:', error);
+    else alert('Product removed');
   };
 
   if (!product) return null;
 
   return (
     <tr className="group hover:bg-gray-50 border-b transition text-sm">
+      {/* Name + Image + Category */}
       <td className="px-4 py-3 whitespace-nowrap">
         <div className="flex items-center gap-3">
           <Image
@@ -149,7 +129,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
             width={40}
             height={40}
             className="rounded object-cover"
-            style={{ minHeight: '50px', minWidth: '50px' }}
+            priority
           />
           <div>
             <div className="font-medium text-gray-800">{product.name}</div>
@@ -158,18 +138,22 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
         </div>
       </td>
 
+      {/* Price */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
         AED {product.price.toFixed(2)}
       </td>
 
+      {/* Stock */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
         {product.stock} units
       </td>
 
+      {/* Orders */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
         {product.ordersLast30Days} orders
       </td>
 
+      {/* Menu */}
       <td className="px-4 py-3 pr-6 text-right relative">
         <button
           className="p-2 hover:bg-gray-100 rounded-full"
