@@ -29,7 +29,7 @@ const Navbar = () => {
         { name: 'Home', path: '/' },
         { name: 'Men', path: '/shop?gender=Men' },
         { name: 'Women', path: '/shop?gender=Women' },
-        { name: 'Best Sellers', path: '/best-sellers' },
+        { name: 'Best Sellers', path: '/bestsellers' },
         { name: 'Fitup', path: '/fitup' },
         { name: 'Brands', path: '/brands' },
         { name: 'Contact Us', path: '/contact' },
