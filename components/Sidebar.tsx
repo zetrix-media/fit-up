@@ -3,31 +3,35 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { FiSettings, FiLogOut, FiHome, FiBox, FiLayers, FiImage, FiFileText, FiMessageSquare } from 'react-icons/fi';
+import {
+  FiSettings,
+  FiLogOut,
+  FiHome,
+  FiBox,
+  FiLayers,
+  FiImage,
+  FiFileText,
+  FiMessageSquare,
+} from 'react-icons/fi';
 
 const Sidebar = () => {
   const router = useRouter();
 
   const handleLogout = () => {
-    Cookies.remove('adminToken'); // Clear the adminToken cookie
-    router.push('/admin/login'); // Redirect to login page
+    Cookies.remove('adminToken');
+    router.push('/admin/login');
   };
 
   return (
     <div
-      className="h-screen w-64 bg-yellow-400 flex flex-col justify-between p-4"
+      className="fixed top-0 left-0 h-screen w-64 bg-yellow-400 flex flex-col justify-between p-4 z-50"
       style={{ minWidth: '16rem' }}
     >
-      {/* Top Section: Logo and Navigation */}
       <div>
-        {/* Logo */}
         <div className="mb-8 flex flex-col items-center">
           <img src="/assets/fitup-logo.png" alt="FIT UP Logo" className="w-40 h-20 mb-2" />
-          {/* <h1 className="text-2xl font-bold text-black">FIT UP</h1>
-          <p className="text-sm font-medium text-black">UNIFORMS</p> */}
         </div>
 
-        {/* Navigation Links */}
         <nav className="flex flex-col gap-4">
           <a
             href="/admin/dashboard"
@@ -81,7 +85,6 @@ const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Bottom Section: Settings and Logout */}
       <div className="flex flex-col gap-4">
         <button
           onClick={() => router.push('/admin/settings')}

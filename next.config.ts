@@ -2,7 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['https://czazkicksdbdoupuavhi.supabase.co/'],
+    domains: ['czazkicksdbdoupuavhi.supabase.co/', 'flagcdn.com'],
+    remotePatterns: [
+],
   },
 };
 

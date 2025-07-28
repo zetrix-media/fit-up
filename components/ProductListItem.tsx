@@ -11,104 +11,116 @@ interface ProductListItemProps {
   productId: number;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
-  const [product, setProduct] = useState<{
-    name: string;
-    category: string;
-    price: number;
-    stock: number;
-    imageUrl: string;
-    ordersLast30Days: number;
-  } | null>(null);
+interface ProductData {
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  imageUrl: string;
+  ordersLast30Days: number;
+}
 
+interface OrderDetailWithOrder {
+  quantity: number;
+  orders: {
+    createdat: string;
+  }[];
+}
+
+const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
+  const [product, setProduct] = useState<ProductData | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-  const fetchData = async () => {
-    const { data: prod, error: prodError } = await supabase
-      .from('products')
-      .select(`
-        name,
-        baseprice,
-        stock,
-        categoryid,
-        productid,
-        categories ( categoryname )
-      `)
-      .eq('productid', productId)
-      .single();
+    const fetchData = async () => {
+      // 1. Product info
+      const { data: prod, error: prodError } = await supabase
+        .from('products')
+        .select('name, baseprice, stock, productid, categoryid')
+        .eq('productid', productId)
+        .single();
 
-    if (prodError || !prod) {
-      console.error('Product fetch error:', prodError);
-      return;
-    }
+      if (prodError || !prod) {
+        console.error('Product fetch error:', prodError);
+        return;
+      }
 
-    const category = prod.categories?.categoryname || 'Uncategorized';
+      // 2. Category name
+      let category = 'Uncategorized';
+      if (prod.categoryid) {
+        const { data: categoryData, error: categoryError } = await supabase
+          .from('categories')
+          .select('categoryname')
+          .eq('categoryid', prod.categoryid)
+          .single();
 
-    const { data: variantData, error: variantError } = await supabase
-      .from('productvariants')
-      .select('mainimageurl, variantid')
-      .eq('productid', productId)
-      .order('variantid', { ascending: true })
-      .limit(1);
+        if (!categoryError && categoryData?.categoryname) {
+          category = categoryData.categoryname;
+        }
+      }
 
-    if (variantError || !variantData || variantData.length === 0) {
-      console.error('Variant fetch error:', variantError);
-      return;
-    }
+      // 3. Product variant for image
+      const { data: variantData, error: variantError } = await supabase
+        .from('productvariants')
+        .select('mainimageurl, variantid')
+        .eq('productid', productId)
+        .order('variantid', { ascending: true })
+        .limit(1);
 
-    const variant = variantData[0];
+      let imageUrl = '/assets/product_placeholder.webp';
+      let variantId: number | null = null;
 
-    const { data: orderDetailsData, error: orderDetailsError } = await supabase
-      .from('orderdetails')
-      .select(`
-        orderid,
-        quantity,
-        price,
-        orders (
-          createdat
-        )
-      `)
-      .eq('variantid', variant.variantid);
+      if (!variantError && Array.isArray(variantData) && variantData.length > 0) {
+        imageUrl = variantData[0].mainimageurl || imageUrl;
+        variantId = variantData[0].variantid;
+      }
 
-    if (orderDetailsError || !orderDetailsData) {
-      console.error('Order fetch error:', orderDetailsError);
-      return;
-    }
+      // 4. Orders in last 30 days
+      let totalSales = 0;
+      if (variantId !== null) {
+        const { data: orderData, error: orderError } = await supabase
+          .from('orderdetails')
+          .select('quantity, orders ( createdat )')
+          .eq('variantid', variantId);
 
-    const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const filteredOrders = orderDetailsData.filter(
-      (o) => new Date(o.orders?.createdat) >= cutoff
-    );
+        if (!orderError && Array.isArray(orderData)) {
+          const orderDetails = orderData as OrderDetailWithOrder[];
+          const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          const filteredOrders = orderDetails.filter(
+            (o) => new Date(o.orders?.[0]?.createdat) >= cutoff
+          );
+          totalSales = filteredOrders.reduce((sum, o) => sum + o.quantity, 0);
+        }
+      }
 
-    const totalSales = filteredOrders.reduce((sum, o) => sum + o.quantity, 0);
+      // 5. Set product
+      setProduct({
+        name: prod.name,
+        category,
+        price: Number(prod.baseprice) || 0,
+        stock: prod.stock ?? 0,
+        imageUrl,
+        ordersLast30Days: totalSales,
+      });
+    };
 
-    setProduct({
-      name: prod.name,
-      category,
-      price: Number(prod.baseprice) || 0,
-      stock: prod.stock ?? 0,
-      imageUrl: variant.mainimageurl || '/assets/product_placeholder.webp',
-      ordersLast30Days: totalSales,
-    });
-  };
-
-  fetchData();
-}, [productId]);
-
+    fetchData();
+  }, [productId]);
 
   const handleEdit = () => router.push(`/edit-product/${productId}`);
+
   const handleRemove = async () => {
-    await supabase.from('products').delete().eq('productid', productId);
-    alert('Product removed');
+    const { error } = await supabase.from('products').delete().eq('productid', productId);
+    if (error) console.error('Delete failed:', error);
+    else alert('Product removed');
   };
 
   if (!product) return null;
 
   return (
     <tr className="group hover:bg-gray-50 border-b transition text-sm">
-      {/* Product name + image + category */}
+      {/* Name + Image + Category */}
       <td className="px-4 py-3 whitespace-nowrap">
         <div className="flex items-center gap-3">
           <Image
@@ -117,6 +129,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
             width={40}
             height={40}
             className="rounded object-cover"
+            priority
           />
           <div>
             <div className="font-medium text-gray-800">{product.name}</div>
@@ -127,15 +140,15 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ productId }) => {
 
       {/* Price */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
-  AED {Number(product.price ?? 0).toFixed(2)}
-</td>
+        AED {product.price.toFixed(2)}
+      </td>
 
       {/* Stock */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
         {product.stock} units
       </td>
 
-      {/* Orders in last 30 days */}
+      {/* Orders */}
       <td className="px-4 py-3 whitespace-nowrap text-gray-700">
         {product.ordersLast30Days} orders
       </td>

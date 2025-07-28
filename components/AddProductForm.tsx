@@ -283,6 +283,7 @@ const AddProductForm = () => {
             selectedColors={selectedColors}
             onSelect={handleColorSelect}
             multiple={true}
+            allowAddColor={true}
           />
         </div>
 
