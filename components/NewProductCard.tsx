@@ -65,7 +65,7 @@ const NewProductCard: React.FC<NewProductCardProps> = ({ productId }) => {
 
       const formattedVariants: ProductVariant[] = variantsData.map((variant) => ({
         id: variant.variantid.toString(),
-        imageUrl: variant.mainimageurl || "/assets/placeholder.jpg",
+        imageUrl: variant.mainimageurl || "/assets/product_placeholder.webp", // changed here
         color: {
           name: variant.colorName || "Unknown",
           hex: variant.colorCode || "#999999",
@@ -114,7 +114,7 @@ const NewProductCard: React.FC<NewProductCardProps> = ({ productId }) => {
           layout="responsive"
           objectFit="cover"
           className={styles.productImage}
-          onError={() => setImageSrc("/assets/placeholder.jpg")}
+          onError={() => setImageSrc("/assets/product_placeholder.webp")} // changed here
         />
       </div>
 

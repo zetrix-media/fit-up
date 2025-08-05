@@ -15,7 +15,7 @@ interface NewArrivalsProps {
   limit?: number;
 }
 
-const NewArrivals = ({ limit = 12 }: NewArrivalsProps) => {
+const NewArrivals = ({ limit = 13 }: NewArrivalsProps) => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {

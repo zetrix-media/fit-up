@@ -27,7 +27,7 @@ export default function ShopPageWrapper() {
   // Get query params
   const categoryFromUrl = Number(searchParams.get('category')) || 0;
   const genderParam = searchParams.get('gender')?.toLowerCase();
-  const gender = genderParam === 'male' || genderParam === 'female' ? genderParam : null;
+  const gender = genderParam === 'men' || genderParam === 'women' ? genderParam : null;
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);

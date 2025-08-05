@@ -1,5 +1,5 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+// import Navbar from "@/components/Navbar";
+// import Footer from "@/components/Footer";
 import ProductImageViewer from "@/components/ProductImageViewer";
 import { notFound } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabaseServer";
@@ -40,7 +40,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <main className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* LEFT: Images */}
@@ -130,7 +130,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
         </div>
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

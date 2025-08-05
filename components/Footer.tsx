@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white py-12 px-6 lg:px-24">
+    <footer className="bg-black text-white py-12 px-6 lg:px-24 mt-auto flex flex-col h-full">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-10">
         {/* Logo and Contact Info */}
         <div>
@@ -109,7 +109,7 @@ export default function Footer() {
       </div>
 
       {/* Footer Bottom */}
-      <div className="mt-10 border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
+      <div className="mt-10 border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 mt-auto">
         <p>© 2024 Fitup Uniforms All rights reserved.</p>
         <div className="flex items-center space-x-6 mt-4 md:mt-0">
           <Image src="/assets/amazon.png" alt="Amazon" width={50} height={20} />

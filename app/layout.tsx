@@ -1,7 +1,9 @@
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Montserrat } from "next/font/google";
+import { Montserrat } from "next/font/google"; 
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import "./globals.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -43,9 +45,12 @@ export default function RootLayout({
           ${geistMono.variable} 
           ${montserrat.variable} 
           antialiased
+          h-screen flex flex-col
         `}
       >
+        <Navbar />
         {children}
+        <Footer />
         <SpeedInsights />
       </body>
     </html>
