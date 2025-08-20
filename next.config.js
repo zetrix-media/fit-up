@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   images: {
-    domains: ['czazkicksdbdoupuavhi.supabase.co/', 'flagcdn.com'],
+    domains: ['fegrpfrfkwjachuzzkaz.supabase.co/', 'flagcdn.com'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'czazkicksdbdoupuavhi.supabase.co',
+        hostname: 'fegrpfrfkwjachuzzkaz.supabase.co',
         port: '',
         pathname: '/storage/v1/object/public/**',
       },
